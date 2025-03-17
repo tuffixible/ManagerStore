@@ -10,37 +10,43 @@ st.set_page_config(
     layout="wide"
 )
 
-# Inicialização de diretórios e arquivos
-if not os.path.exists("data"):
-    os.makedirs("data")
+# Inicialização de diretórios
+os.makedirs("data", exist_ok=True)
 
-# Inicialização dos arquivos CSV se não existirem
+# Estrutura dos DataFrames
+produtos_structure = {
+    'codigo': [],
+    'nome': [],
+    'categoria': [],
+    'descricao': [],
+    'preco_custo': [],
+    'preco_venda': [],
+    'quantidade': [],
+    'imagem_path': []
+}
+
+financeiro_structure = {
+    'data': [],
+    'tipo': [],
+    'descricao': [],
+    'valor': [],
+    'categoria': []
+}
+
+usuarios_structure = {
+    'usuario': ['admin'],
+    'senha': ['admin123']
+}
+
+# Inicialização dos arquivos CSV
 if not os.path.exists("data/usuarios.csv"):
-    pd.DataFrame({
-        'usuario': ['admin'],
-        'senha': ['admin123']
-    }).to_csv("data/usuarios.csv", index=False)
+    pd.DataFrame(usuarios_structure).to_csv("data/usuarios.csv", index=False)
 
 if not os.path.exists("data/produtos.csv"):
-    pd.DataFrame({
-        'codigo': [],
-        'nome': [],
-        'categoria': [],
-        'descricao': [],
-        'preco_custo': [],
-        'preco_venda': [],
-        'quantidade': [],
-        'imagem_path': []
-    }).to_csv("data/produtos.csv", index=False)
+    pd.DataFrame(produtos_structure).to_csv("data/produtos.csv", index=False)
 
 if not os.path.exists("data/financeiro.csv"):
-    pd.DataFrame({
-        'data': [],
-        'tipo': [],
-        'descricao': [],
-        'valor': [],
-        'categoria': []
-    }).to_csv("data/financeiro.csv", index=False)
+    pd.DataFrame(financeiro_structure).to_csv("data/financeiro.csv", index=False)
 
 # Verificação de autenticação
 if not check_password():
@@ -57,23 +63,23 @@ Utilize o menu lateral para navegar entre as funcionalidades:
 - **Relatórios**: Visualização de relatórios e gráficos
 """)
 
-# Métricas principais
-col1, col2, col3 = st.columns(3)
+try:
+    # Métricas principais
+    col1, col2, col3 = st.columns(3)
 
-# Carregando dados
-produtos_df = pd.read_csv("data/produtos.csv")
-financeiro_df = pd.read_csv("data/financeiro.csv")
+    # Carregando dados
+    produtos_df = pd.read_csv("data/produtos.csv")
+    financeiro_df = pd.read_csv("data/financeiro.csv")
 
-with col1:
-    st.metric("Total de Produtos", len(produtos_df))
+    with col1:
+        st.metric("Total de Produtos", len(produtos_df))
 
-with col2:
-    if not financeiro_df.empty:
-        receitas = financeiro_df[financeiro_df['tipo'] == 'entrada']['valor'].sum()
+    with col2:
+        receitas = financeiro_df[financeiro_df['tipo'] == 'entrada']['valor'].sum() if not financeiro_df.empty else 0
         st.metric("Receitas Totais", f"R$ {receitas:.2f}")
-    else:
-        st.metric("Receitas Totais", "R$ 0.00")
 
-with col3:
-    produtos_baixo_estoque = len(produtos_df[produtos_df['quantidade'] <= 5])
-    st.metric("Produtos com Estoque Baixo", produtos_baixo_estoque)
+    with col3:
+        produtos_baixo_estoque = len(produtos_df[produtos_df['quantidade'] <= 5])
+        st.metric("Produtos com Estoque Baixo", produtos_baixo_estoque)
+except Exception as e:
+    st.error(f"Erro ao carregar dados: {str(e)}")
