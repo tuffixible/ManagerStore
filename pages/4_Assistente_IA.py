@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils.ai_assistant import gerar_sugestoes, formatar_sugestoes
+from utils import gerar_sugestoes, formatar_sugestoes
 from utils import load_data
 from auth import check_password
 
@@ -40,10 +40,10 @@ with st.expander("Como funciona a análise?"):
     st.write("""
     1. **Análise de Vendas**: O sistema analisa as tendências de vendas dos últimos 30 dias 
        utilizando regressão linear para identificar padrões.
-    
+
     2. **Análise de Estoque**: São identificados produtos com quantidade menor ou igual a 5 
        unidades, considerados como estoque crítico.
-    
+
     3. **Sugestões Automáticas**: Com base nas análises, o sistema gera sugestões 
        personalizadas para ajudar na gestão do negócio.
     """)
