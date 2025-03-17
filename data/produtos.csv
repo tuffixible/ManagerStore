@@ -1,6 +1,7 @@
 codigo,nome,categoria,descricao,preco_custo,preco_venda,quantidade,imagem_path
-1,Camiseta Básica,Roupas,Camiseta 100% algodão,25.00,49.90,15,
-2,Calça Jeans,Roupas,Calça jeans tradicional,89.90,179.90,8,
-3,Tênis Casual,Calçados,Tênis casual confortável,99.90,199.90,5,
-4,Vestido Floral,Roupas,Vestido estampa floral,79.90,159.90,10,
-5,Cinto de Couro,Acessórios,Cinto em couro legítimo,35.00,89.90,12,
+1,Camiseta Básica,Roupas,Camiseta 100% algodão,25.0,49.9,15,
+2,Calça Jeans,Roupas,Calça jeans tradicional,89.9,179.9,8,
+3,Tênis Casual,Calçados,Tênis casual confortável,99.9,199.9,5,
+4,Vestido Floral,Roupas,Vestido estampa floral,79.9,159.9,10,
+5,Cinto de Couro,Acessórios,Cinto em couro legítimo,35.0,89.9,12,
+6,Puma,Calçados,Puma preto,20.0,50.0,1,
