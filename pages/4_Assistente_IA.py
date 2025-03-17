@@ -9,6 +9,37 @@ if not check_password():
 
 st.title("Assistente de IA")
 
+# CSS para animação de carregamento personalizada
+st.markdown("""
+<style>
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #FF4B4B;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.loader-text {
+    color: #FF4B4B;
+    font-size: 16px;
+    margin-top: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.write("""
 ### Análise Inteligente de Dados
 O assistente utiliza algoritmos de aprendizado de máquina para analisar:
@@ -21,19 +52,33 @@ O assistente utiliza algoritmos de aprendizado de máquina para analisar:
 produtos_df = load_data("produtos")
 financeiro_df = load_data("financeiro")
 
-# Gerando sugestões
-sugestoes = gerar_sugestoes(produtos_df, financeiro_df)
-texto_sugestoes = formatar_sugestoes(sugestoes)
+# Botão para gerar sugestões
+if st.button("Gerar Sugestões", key="gerar_sugestoes"):
+    # Mostrar animação de carregamento
+    with st.spinner():
+        st.markdown("""
+        <div class="loader-container">
+            <div class="loader"></div>
+            <div class="loader-text">Analisando dados e gerando sugestões...</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-# Exibindo sugestões
-st.header("Sugestões do Assistente")
+        # Gerando sugestões
+        sugestoes = gerar_sugestoes(produtos_df, financeiro_df)
+        texto_sugestoes = formatar_sugestoes(sugestoes)
 
-if texto_sugestoes:
-    for sugestao in texto_sugestoes:
-        st.markdown(sugestao)
-        st.divider()
-else:
-    st.info("Não há sugestões disponíveis no momento. Isso pode acontecer se não houver dados suficientes para análise.")
+        # Limpar a animação de carregamento
+        st.empty()
+
+        # Exibindo sugestões
+        st.header("Sugestões do Assistente")
+
+        if texto_sugestoes:
+            for sugestao in texto_sugestoes:
+                st.markdown(sugestao)
+                st.divider()
+        else:
+            st.info("Não há sugestões disponíveis no momento. Isso pode acontecer se não houver dados suficientes para análise.")
 
 # Explicação da análise
 with st.expander("Como funciona a análise?"):
