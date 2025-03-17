@@ -54,31 +54,33 @@ financeiro_df = load_data("financeiro")
 
 # Botão para gerar sugestões
 if st.button("Gerar Sugestões", key="gerar_sugestoes"):
+    # Criar container para animação
+    loading_container = st.empty()
+
     # Mostrar animação de carregamento
-    with st.spinner():
-        st.markdown("""
-        <div class="loader-container">
-            <div class="loader"></div>
-            <div class="loader-text">Analisando dados e gerando sugestões...</div>
-        </div>
-        """, unsafe_allow_html=True)
+    loading_container.markdown("""
+    <div class="loader-container">
+        <div class="loader"></div>
+        <div class="loader-text">Analisando dados e gerando sugestões...</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-        # Gerando sugestões
-        sugestoes = gerar_sugestoes(produtos_df, financeiro_df)
-        texto_sugestoes = formatar_sugestoes(sugestoes)
+    # Gerando sugestões
+    sugestoes = gerar_sugestoes(produtos_df, financeiro_df)
+    texto_sugestoes = formatar_sugestoes(sugestoes)
 
-        # Limpar a animação de carregamento
-        st.empty()
+    # Limpar animação antes de mostrar resultados
+    loading_container.empty()
 
-        # Exibindo sugestões
-        st.header("Sugestões do Assistente")
+    # Exibindo sugestões
+    st.header("Sugestões do Assistente")
 
-        if texto_sugestoes:
-            for sugestao in texto_sugestoes:
-                st.markdown(sugestao)
-                st.divider()
-        else:
-            st.info("Não há sugestões disponíveis no momento. Isso pode acontecer se não houver dados suficientes para análise.")
+    if texto_sugestoes:
+        for sugestao in texto_sugestoes:
+            st.markdown(sugestao)
+            st.divider()
+    else:
+        st.info("Não há sugestões disponíveis no momento. Isso pode acontecer se não houver dados suficientes para análise.")
 
 # Explicação da análise
 with st.expander("Como funciona a análise?"):
