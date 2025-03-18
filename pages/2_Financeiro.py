@@ -7,10 +7,40 @@ from auth import check_password
 if not check_password():
     st.stop()
 
-st.title("Gestão Financeira")
+st.title("💰 Gestão Financeira")
 
-# Tabs para diferentes funcionalidades
-tab1, tab2 = st.tabs(["Registro de Movimentação", "Extrato"])
+# Custom CSS for financial interface
+st.markdown("""
+<style>
+.financial-card {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.financial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.money-input {
+    font-family: 'Courier New', monospace;
+    font-size: 24px !important;
+    color: #2e7d32;
+}
+.transaction-animation {
+    animation: slide-up 0.5s ease;
+}
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Animated tabs
+tab1, tab2 = st.tabs(["💳 Nova Transação", "📊 Extrato"])
 
 with tab1:
     st.header("Nova Movimentação")
@@ -23,7 +53,17 @@ with tab1:
                 "Tipo de Movimentação",
                 ["entrada", "saída"]
             )
-            valor = st.number_input("Valor", min_value=0.0, step=0.01)
+            valor = st.number_input("Valor", min_value=0.0, step=0.01, key="valor_input", 
+                help="Digite o valor da transação")
+            
+            # Calculadora rápida
+            col_calc1, col_calc2 = st.columns(2)
+            with col_calc1:
+                if st.button("+ R$ 100"):
+                    st.session_state.valor_input += 100
+            with col_calc2:
+                if st.button("+ R$ 1000"):
+                    st.session_state.valor_input += 1000
 
         with col2:
             categoria = st.selectbox(
