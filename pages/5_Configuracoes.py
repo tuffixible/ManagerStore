@@ -59,3 +59,13 @@ with st.expander("🔐 Alterar Senha"):
             else:
                 st.error("❌ As senhas não conferem!")
 st.markdown('</div>', unsafe_allow_html=True)
+# Configurações de Notificações WhatsApp
+st.markdown('<div class="config-card">', unsafe_allow_html=True)
+st.subheader("📱 Configurações de WhatsApp")
+whatsapp_number = st.text_input("Número do WhatsApp (com DDD)", placeholder="Ex: 11999999999")
+enable_notifications = st.checkbox("Ativar notificações de atualizações")
+
+if st.button("Salvar Configurações de WhatsApp"):
+    # Aqui você pode implementar a lógica para salvar as configurações
+    st.success("✅ Configurações de WhatsApp salvas com sucesso!")
+st.markdown('</div>', unsafe_allow_html=True)

@@ -85,14 +85,27 @@ with tab1:
         
         num_variantes = st.number_input("Número de variantes", min_value=1, value=1)
         
+        # Cores e tamanhos padrão
+        cores_padrao = ["Preto", "Branco", "Azul", "Vermelho", "Verde"]
+        tamanhos_padrao = ["P", "M", "G", "GG"]
+        
         variantes = []
         for i in range(num_variantes):
-            st.markdown(f"#### Variante {i+1}")
+            st.markdown(f"""
+            <div style='background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                        padding: 20px;
+                        border-radius: 10px;
+                        margin: 10px 0;
+                        box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff;'>
+                <h4>Variante {i+1}</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            
             cols = st.columns(3)
             with cols[0]:
-                cor = st.text_input(f"Cor", key=f"cor_{i}")
+                cor = st.selectbox(f"Cor", cores_padrao, key=f"cor_{i}")
             with cols[1]:
-                tamanho = st.text_input(f"Tamanho", key=f"tamanho_{i}")
+                tamanho = st.selectbox(f"Tamanho", tamanhos_padrao, key=f"tamanho_{i}")
             with cols[2]:
                 quantidade = st.number_input(f"Quantidade", min_value=0, key=f"qtd_{i}")
             variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
@@ -150,7 +163,27 @@ with tab2:
 
         for nome_produto, grupo in produtos_agrupados:
             with st.container():
-                st.markdown(f"### {nome_produto}")
+                st.markdown(f"""
+                <div style='
+                    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                    padding: 30px;
+                    border-radius: 15px;
+                    margin: 20px 0;
+                    box-shadow: 10px 10px 20px #d1d1d1, -10px -10px 20px #ffffff;
+                    position: relative;
+                    overflow: hidden;
+                '>
+                    <h2 style='
+                        background: linear-gradient(45deg, #1e88e5, #1565c0);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        font-size: 28px;
+                        margin-bottom: 20px;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                    '>{nome_produto}</h2>
+                </div>
+                """, unsafe_allow_html=True)
                 st.markdown('<div class="product-card">', unsafe_allow_html=True)
 
                 # Carrossel de imagens em tamanho controlado
