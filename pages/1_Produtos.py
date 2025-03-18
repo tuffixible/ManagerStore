@@ -83,36 +83,36 @@ with tab2:
         if nome_filter:
             df = df[df['nome'].str.contains(nome_filter, case=False)]
         
-        # Exibir produtos
+        # Exibir produtos em grade
+        cols = st.columns(3)
         for index, row in df.iterrows():
-            with st.container():
-                col1, col2, col3 = st.columns([2,1,1])
-                
-                with col1:
-                    st.subheader(row['nome'])
-                    st.write(f"Categoria: {row['categoria']}")
-                    st.write(f"Cor: {row['cor']}")
-                    st.write(f"Tamanho: {row['tamanho']}")
-                    st.write(f"Descrição: {row['descricao']}")
+            with cols[index % 3]:
+                with st.container():
+                    # Imagem do produto
                     if row['imagem_path']:
                         try:
-                            st.image(f"uploads/{row['imagem_path']}", width=200)
+                            st.image(f"uploads/{row['imagem_path']}", use_column_width=True)
                         except:
-                            st.error("Imagem não encontrada")
-                
-                with col2:
-                    st.write(f"Preço de Venda: R$ {row['preco_venda']:.2f}")
-                    st.write(f"Quantidade: {row['quantidade']}")
-                
-                with col3:
+                            st.image("https://placehold.co/200x200?text=Sem+Imagem", use_column_width=True)
+                    else:
+                        st.image("https://placehold.co/200x200?text=Sem+Imagem", use_column_width=True)
+                    
+                    # Informações do produto
+                    st.subheader(row['nome'])
+                    st.write(f"**Categoria:** {row['categoria']}")
+                    st.write(f"**Cor:** {row['cor']}")
+                    st.write(f"**Tamanho:** {row['tamanho']}")
+                    st.write(f"**Preço:** R$ {row['preco_venda']:.2f}")
+                    st.write(f"**Quantidade:** {row['quantidade']}")
+                    
                     if row['quantidade'] <= 5:
                         st.warning("Estoque Baixo!")
                     
-                    if st.button(f"Excluir {row['nome']}", key=f"del_{index}"):
+                    if st.button(f"Excluir", key=f"del_{index}"):
                         df = df.drop(index)
                         save_data(df, "produtos")
                         st.rerun()
-                
-                st.divider()
+                    
+                    st.divider()
     else:
         st.info("Nenhum produto cadastrado")
