@@ -1,4 +1,25 @@
 codigo,nome,categoria,descricao,preco_custo,preco_venda,quantidade,imagem_path,cor,tamanho
-1,Tênis Olympikus impacto,Calçados,ótima qualidade,60.0,120.0,10,Captura de tela 2025-03-17 210955.png,vermelho com preto,40
-2,Tênis Olympikus impacto,Calçados,,60.0,120.0,10,verde.png,Verde com Azul escuro,40
-3,Tênis Olympikus impacto,Calçados,Olympikus,60.0,120.0,10,Preto.png,Preto com preto,40
+1,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,40
+2,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,41
+3,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,42
+4,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,40
+5,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,41
+6,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,42
+7,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,40
+8,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,41
+9,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,42
+10,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,35
+11,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,36
+12,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,37
+13,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,35
+14,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,36
+15,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,37
+16,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,40
+17,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,41
+18,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,42
+19,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,40
+20,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,41
+21,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,42
+22,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,35
+23,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,36
+24,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,37
