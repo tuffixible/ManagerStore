@@ -5,8 +5,8 @@ import os
 
 # Configuração inicial da página
 st.set_page_config(
-    page_title="Sistema de Gestão - Loja Xible",
-    page_icon="👔",
+    page_title="Home - Loja Xible",
+    page_icon="🏠",
     layout="wide"
 )
 

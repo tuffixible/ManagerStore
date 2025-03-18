@@ -190,7 +190,7 @@ with tab2:
                             
                             # Configurar colunas para o editor
                             column_config = {
-                                "Tamanho": st.column_config.TextColumn("Tamanho", width="medium"),
+                                "Tamanho": st.column_config.NumberColumn("Tamanho", width="medium"),
                                 "Quantidade": st.column_config.NumberColumn("Quantidade", width="small"),
                                 "Preço": st.column_config.TextColumn("Preço", width="small"),
                                 "Status": st.column_config.TextColumn("Status", width="small"),
