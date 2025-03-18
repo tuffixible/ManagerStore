@@ -135,25 +135,29 @@ with tab2:
                     primeira_variante = grupo_produto.iloc[0]
                     
                     # Gerenciar carrossel de imagens
-                    produto_key = nome_produto
+                    produto_key = f"{nome_produto}"
+                    
+                    # Inicializar variáveis de estado para o produto
                     if produto_key not in st.session_state.image_index:
                         st.session_state.image_index[produto_key] = 0
                         st.session_state.last_update[produto_key] = time.time()
-
-                    # Atualizar índice da imagem
-                    current_time = time.time()
-                    if current_time - st.session_state.last_update[produto_key] >= 5:
-                        todas_imagens = grupo_produto['imagem_path'].unique()
-                        st.session_state.image_index[produto_key] = (st.session_state.image_index[produto_key] + 1) % len(todas_imagens)
-                        st.session_state.last_update[produto_key] = current_time
                     
-                    # Mostrar imagem atual
-                    imagem_atual = primeira_variante['imagem_path']
-                    if imagem_atual:
-                        try:
-                            st.image(f"uploads/{imagem_atual}", use_container_width=True)
-                        except:
-                            st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
+                    # Obter todas as imagens únicas do produto
+                    todas_imagens = grupo_produto['imagem_path'].unique().tolist()
+                    if todas_imagens:
+                        # Atualizar índice da imagem a cada 5 segundos
+                        current_time = time.time()
+                        if current_time - st.session_state.last_update[produto_key] >= 5:
+                            st.session_state.image_index[produto_key] = (st.session_state.image_index[produto_key] + 1) % len(todas_imagens)
+                            st.session_state.last_update[produto_key] = current_time
+                        
+                        # Mostrar imagem atual
+                        imagem_atual = todas_imagens[st.session_state.image_index[produto_key]]
+                        if imagem_atual:
+                            try:
+                                st.image(f"uploads/{imagem_atual}", use_container_width=True)
+                            except:
+                                st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     else:
                         st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     
@@ -161,22 +165,95 @@ with tab2:
                     st.write(f"**Categoria:** {primeira_variante['categoria']}")
                     st.write(f"**Preço:** R$ {primeira_variante['preco_venda']:.2f}")
                     
-                    # Exibir variantes agrupadas por cor
+                    # Exibir variantes agrupadas por cor com sistema de vendas
                     with st.expander("Ver todas as variantes"):
                         for cor, variantes_cor in variantes_por_cor:
-                            st.write(f"**Cor: {cor}**")
+                            st.subheader(f"Cor: {cor}", divider="gray")
+                            
+                            # Criar tabela de variantes
+                            data = []
                             for _, variante in variantes_cor.iterrows():
-                                col1, col2, col3 = st.columns([2,2,1])
-                                with col1:
-                                    st.write(f"Tamanho: {variante['tamanho']}")
-                                with col2:
-                                    st.write(f"Qtd: {variante['quantidade']}")
-                                with col3:
-                                    if variante['quantidade'] <= 5:
-                                        st.warning("Baixo!")
-                                    if st.button("🗑️", key=f"del_{variante.name}"):
-                                        df = df.drop(variante.name)
+                                data.append({
+                                    "Tamanho": variante['tamanho'],
+                                    "Quantidade": variante['quantidade'],
+                                    "Preço": f"R$ {variante['preco_venda']:.2f}",
+                                    "Status": "⚠️ Baixo!" if variante['quantidade'] <= 5 else "✅ OK",
+                                    "Ações": {
+                                        "variante_id": variante.name,
+                                        "quantidade": variante['quantidade'],
+                                        "preco": variante['preco_venda']
+                                    }
+                                })
+                            
+                            # Criar DataFrame para a tabela
+                            df_display = pd.DataFrame(data)
+                            
+                            # Exibir tabela com editor
+                            edited_df = st.data_editor(
+                                df_display,
+                                column_config={
+                                    "Tamanho": st.column_config.TextColumn("Tamanho", width="medium"),
+                                    "Quantidade": st.column_config.NumberColumn("Quantidade", width="small"),
+                                    "Preço": st.column_config.TextColumn("Preço", width="small"),
+                                    "Status": st.column_config.TextColumn("Status", width="small"),
+                                    "Ações": st.column_config.Column(
+                                        "Ações",
+                                        width="large",
+                                        help="Selecione para vender"
+                                    )
+                                },
+                                hide_index=True,
+                                key=f"table_{cor}_{nome_produto}"
+                            )
+                            
+                            # Sistema de vendas
+                            selected_rows = st.data_editor(
+                                edited_df,
+                                disabled=["Tamanho", "Quantidade", "Preço", "Status"],
+                                hide_index=True,
+                                key=f"selection_{cor}_{nome_produto}"
+                            )
+                            
+                            if selected_rows is not None and len(selected_rows) > 0:
+                                with st.form(key=f"venda_form_{cor}_{nome_produto}"):
+                                    st.subheader("Realizar Venda", divider="green")
+                                    
+                                    total_venda = 0
+                                    for idx, row in selected_rows.iterrows():
+                                        if row['Ações']:
+                                            variante_id = row['Ações']['variante_id']
+                                            qtd_disponivel = row['Ações']['quantidade']
+                                            preco = row['Ações']['preco']
+                                            
+                                            col1, col2 = st.columns(2)
+                                            with col1:
+                                                st.text(f"Tamanho: {row['Tamanho']}")
+                                            with col2:
+                                                qtd_venda = st.number_input(
+                                                    "Quantidade",
+                                                    min_value=1,
+                                                    max_value=qtd_disponivel,
+                                                    value=1,
+                                                    key=f"qtd_{variante_id}"
+                                                )
+                                            
+                                            total_venda += qtd_venda * preco
+                                    
+                                    st.metric("Total da Venda", f"R$ {total_venda:.2f}")
+                                    
+                                    if st.form_submit_button("Confirmar Venda", type="primary"):
+                                        # Atualizar estoque
+                                        for idx, row in selected_rows.iterrows():
+                                            if row['Ações']:
+                                                variante_id = row['Ações']['variante_id']
+                                                qtd_venda = st.session_state[f"qtd_{variante_id}"]
+                                                
+                                                # Atualizar DataFrame
+                                                df.loc[variante_id, 'quantidade'] -= qtd_venda
+                                        
+                                        # Salvar alterações
                                         save_data(df, "produtos")
+                                        st.success("Venda realizada com sucesso!")
                                         st.rerun()
                     
                     st.divider()
