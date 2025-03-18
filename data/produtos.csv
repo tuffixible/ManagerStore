@@ -1,1 +1,4 @@
 codigo,nome,categoria,descricao,preco_custo,preco_venda,quantidade,imagem_path,cor,tamanho
+1,Tênis Olympikus impacto,Calçados,ótima qualidade,60.0,120.0,10,Captura de tela 2025-03-17 210955.png,vermelho com preto,40
+2,Tênis Olympikus impacto,Calçados,,60.0,120.0,10,verde.png,Verde com Azul escuro,40
+3,Tênis Olympikus impacto,Calçados,Olympikus,60.0,120.0,10,Preto.png,Preto com preto,40
