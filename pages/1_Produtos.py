@@ -9,7 +9,7 @@ if not check_password():
 st.title("Gestão de Produtos")
 
 # Tabs para diferentes funcionalidades
-tab1, tab2 = st.tabs(["Cadastro", "Lista de Produtos"])
+tab1, tab2, tab3 = st.tabs(["Cadastro", "Lista de Produtos", "Controle de Estoque"])
 
 with tab1:
     st.header("Cadastro de Produtos")
@@ -134,5 +134,48 @@ with tab2:
                         st.rerun()
                     
                     st.divider()
+    else:
+        st.info("Nenhum produto cadastrado")
+
+with tab3:
+    st.header("Controle de Estoque")
+    
+    df = load_data("produtos")
+    if not df.empty:
+        # Cálculos financeiros
+        df['valor_total_custo'] = df['preco_custo'] * df['quantidade']
+        df['valor_total_venda'] = df['preco_venda'] * df['quantidade']
+        df['lucro_previsto'] = df['valor_total_venda'] - df['valor_total_custo']
+        
+        # Métricas gerais
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            total_investimento = df['valor_total_custo'].sum()
+            st.metric("Total Investido", f"R$ {total_investimento:.2f}")
+        with col2:
+            total_previsto = df['valor_total_venda'].sum()
+            st.metric("Faturamento Previsto", f"R$ {total_previsto:.2f}")
+        with col3:
+            lucro_total = df['lucro_previsto'].sum()
+            st.metric("Lucro Previsto", f"R$ {lucro_total:.2f}")
+        
+        # Tabela detalhada
+        st.subheader("Análise por Produto")
+        df_display = df[['nome', 'quantidade', 'preco_custo', 'preco_venda', 
+                        'valor_total_custo', 'valor_total_venda', 'lucro_previsto']]
+        
+        st.dataframe(
+            df_display,
+            column_config={
+                "nome": "Produto",
+                "quantidade": "Estoque",
+                "preco_custo": st.column_config.NumberColumn("Preço Custo", format="R$ %.2f"),
+                "preco_venda": st.column_config.NumberColumn("Preço Venda", format="R$ %.2f"),
+                "valor_total_custo": st.column_config.NumberColumn("Total em Custo", format="R$ %.2f"),
+                "valor_total_venda": st.column_config.NumberColumn("Total em Venda", format="R$ %.2f"),
+                "lucro_previsto": st.column_config.NumberColumn("Lucro Previsto", format="R$ %.2f")
+            },
+            hide_index=True
+        )
     else:
         st.info("Nenhum produto cadastrado")

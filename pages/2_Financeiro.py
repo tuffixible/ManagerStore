@@ -81,10 +81,31 @@ with tab2:
 
         # Exibir movimentações
         df_display = df[['data', 'tipo', 'categoria', 'descricao', 'valor']]
-        st.dataframe(
-            data=df_display,
-            hide_index=True
+        # Adiciona coluna de seleção
+        df_display['Selecionar'] = False
+        selected_rows = st.data_editor(
+            df_display,
+            hide_index=True,
+            column_config={
+                "Selecionar": st.column_config.CheckboxColumn(default=False),
+                "data": "Data",
+                "tipo": "Tipo",
+                "categoria": "Categoria",
+                "descricao": "Descrição",
+                "valor": st.column_config.NumberColumn("Valor", format="R$ %.2f")
+            },
+            disabled=["data", "tipo", "categoria", "descricao", "valor"]
         )
+        
+        # Botões de ação
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Excluir Selecionados"):
+                selected_indices = selected_rows[selected_rows['Selecionar']].index
+                df = df.drop(selected_indices)
+                save_data(df, "financeiro")
+                st.success("Registros excluídos com sucesso!")
+                st.rerun()
 
         # Resumo
         col1, col2, col3 = st.columns(3)
