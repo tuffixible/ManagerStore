@@ -19,15 +19,16 @@ with tab1:
         st.session_state.variants = [{"cor": "", "tamanho": "", "quantidade": 0}]
 
     with st.form("cadastro_produto"):
-        nome = st.text_input("Nome do Produto")
+        nome = st.text_input("Nome do Produto", key="nome_produto")
         categoria = st.selectbox(
             "Categoria",
-            ["Roupas", "Calçados", "Acessórios"]
+            ["Roupas", "Calçados", "Acessórios"],
+            key="categoria_produto"
         )
-        preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
-        preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
-        descricao = st.text_area("Descrição")
-        imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+        preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01, key="preco_custo")
+        preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01, key="preco_venda")
+        descricao = st.text_area("Descrição", key="descricao_produto")
+        imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'], key="imagem_produto")
 
         st.subheader("Variantes do Produto")
         for i, variant in enumerate(st.session_state.variants):
@@ -38,24 +39,8 @@ with tab1:
                 st.session_state.variants[i]["tamanho"] = st.text_input("Tamanho", key=f"tamanho_{i}", value=variant["tamanho"])
             with col3:
                 st.session_state.variants[i]["quantidade"] = st.number_input("Quantidade", key=f"qtd_{i}", min_value=0, step=1, value=variant["quantidade"])
-        else:
-            # Layout para desktop: duas colunas
-            col1, col2 = st.columns(2)
-            with col1:
-                nome = st.text_input("Nome do Produto")
-                categoria = st.selectbox(
-                    "Categoria",
-                    ["Roupas", "Calçados", "Acessórios"]
-                )
-                cor = st.text_input("Cor")
-                tamanho = st.text_input("Tamanho")
-                preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
-                preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
-            
-            with col2:
-                quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
-                descricao = st.text_area("Descrição")
-                imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+        # Remove this section since it's duplicated and causing errors
+            st.error("Erro na visualização mobile")
         
         col1, col2 = st.columns(2)
         with col1:
