@@ -189,6 +189,15 @@ with tab2:
                             df_display = pd.DataFrame(data)
                             
                             # Exibir tabela com editor
+                            # Converter o DataFrame para os tipos corretos
+                            df_display = pd.DataFrame(data)
+                            df_display = df_display.astype({
+                                'Tamanho': str,
+                                'Quantidade': int,
+                                'Preço': str,
+                                'Status': str
+                            })
+                            
                             edited_df = st.data_editor(
                                 df_display,
                                 column_config={
