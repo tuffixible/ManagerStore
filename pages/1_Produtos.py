@@ -175,47 +175,58 @@ with tab2:
                     cor_titulo = st.color_picker("", "#000000", key=f"color_{nome_produto}")
                 
                 # Botão de exclusão
-                if st.button(f"🗑️ Excluir {nome_produto}", key=f"del_{nome_produto}"):
-                    if st.confirm(f"Tem certeza que deseja excluir {nome_produto} e todas suas variantes?"):
-                        df = df[df['nome'] != nome_produto]
-                        save_data(df, "produtos")
-                        st.success(f"✅ Produto {nome_produto} excluído com sucesso!")
-                        st.experimental_rerun()
+                col_del1, col_del2 = st.columns([3,1])
+                with col_del2:
+                    delete_key = f"del_{nome_produto}"
+                    if delete_key not in st.session_state:
+                        st.session_state[delete_key] = False
+                        
+                    if st.button(f"🗑️ Excluir", key=f"btn_{delete_key}"):
+                        st.session_state[delete_key] = True
+                        
+                    if st.session_state[delete_key]:
+                        if st.button("❌ Confirmar exclusão?", key=f"confirm_{delete_key}"):
+                            df = df[df['nome'] != nome_produto]
+                            save_data(df, "produtos")
+                            st.success(f"✅ Produto {nome_produto} excluído com sucesso!")
+                            st.rerun()
+                        if st.button("↩️ Cancelar", key=f"cancel_{delete_key}"):
+                            st.session_state[delete_key] = False
+                            st.rerun()
                 
+                # Container mais compacto para cada produto
                 st.markdown(f"""
                 <div style='
                     background: linear-gradient(145deg, #ffffff, #f0f0f0);
-                    padding: 30px;
-                    border-radius: 15px;
-                    margin: 20px 0;
-                    box-shadow: 10px 10px 20px #d1d1d1, -10px -10px 20px #ffffff;
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin: 10px 0;
+                    box-shadow: 5px 5px 10px #d1d1d1;
                     position: relative;
-                    overflow: hidden;
                 '>
-                    <h2 style='
+                    <h3 style='
                         color: {cor_titulo};
-                        font-size: 28px;
-                        margin-bottom: 20px;
+                        font-size: 20px;
+                        margin-bottom: 10px;
                         text-transform: uppercase;
-                        letter-spacing: 2px;
-                    '>{nome_produto}</h2>
+                    '>{nome_produto}</h3>
                 </div>
                 """, unsafe_allow_html=True)
                 st.markdown('<div class="product-card">', unsafe_allow_html=True)
 
-                # Carrossel de imagens em tamanho controlado
+                # Imagens em tamanho reduzido
                 imagens = grupo['imagem_path'].unique()
                 if len(imagens) > 0 and imagens[0]:
-                    cols = st.columns(len(imagens))
-                    for idx, img in enumerate(imagens):
+                    cols = st.columns(min(len(imagens), 3))
+                    for idx, img in enumerate(imagens[:3]):
                         with cols[idx]:
                             try:
-                                st.image(f"uploads/{img}", width=200)
+                                st.image(f"uploads/{img}", width=120)
                             except:
-                                st.image("https://via.placeholder.com/200x200?text=Sem+Imagem")
+                                st.image("https://via.placeholder.com/120x120?text=Sem+Imagem")
 
-                # Informações do produto
-                col1, col2 = st.columns([2,1])
+                # Informações do produto em layout compacto
+                col1, col2 = st.columns([3,2])
                 with col1:
                     st.write(f"**🏷️ Categoria:** {grupo['categoria'].iloc[0]}")
                     st.write(f"**📝 Descrição:** {grupo['descricao'].iloc[0]}")
