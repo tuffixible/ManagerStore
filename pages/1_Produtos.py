@@ -85,10 +85,6 @@ with tab1:
         
         num_variantes = st.number_input("Número de variantes", min_value=1, value=1)
         
-        # Cores e tamanhos padrão
-        cores_padrao = ["Preto", "Branco", "Azul", "Vermelho", "Verde"]
-        tamanhos_padrao = ["P", "M", "G", "GG"]
-        
         variantes = []
         for i in range(num_variantes):
             st.markdown(f"""
@@ -103,9 +99,9 @@ with tab1:
             
             cols = st.columns(3)
             with cols[0]:
-                cor = st.selectbox(f"Cor", cores_padrao, key=f"cor_{i}")
+                cor = st.text_input(f"Cor", key=f"cor_{i}", placeholder="Digite a cor")
             with cols[1]:
-                tamanho = st.selectbox(f"Tamanho", tamanhos_padrao, key=f"tamanho_{i}")
+                tamanho = st.text_input(f"Tamanho", key=f"tamanho_{i}", placeholder="Digite o tamanho")
             with cols[2]:
                 quantidade = st.number_input(f"Quantidade", min_value=0, key=f"qtd_{i}")
             variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
@@ -163,6 +159,9 @@ with tab2:
 
         for nome_produto, grupo in produtos_agrupados:
             with st.container():
+                # Personalização do título
+                cor_titulo = st.color_picker(f"Cor do título para {nome_produto}", "#000000")
+                
                 st.markdown(f"""
                 <div style='
                     background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -174,9 +173,7 @@ with tab2:
                     overflow: hidden;
                 '>
                     <h2 style='
-                        background: linear-gradient(45deg, #1e88e5, #1565c0);
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
+                        color: {cor_titulo};
                         font-size: 28px;
                         margin-bottom: 20px;
                         text-transform: uppercase;

@@ -74,13 +74,7 @@ def check_password():
             
             st.markdown('<div class="login-container">', unsafe_allow_html=True)
             with st.form("Autenticação"):
-                try:
-                    if os.path.exists("logo.png"):
-                        st.image("logo.png", width=300)
-                    st.markdown("### Sistema de Gestão", help="Bem-vindo ao sistema")
-                except:
-                    st.info("⚠️ Logo não encontrada")
-                    st.markdown("### Sistema de Gestão", help="Bem-vindo ao sistema")
+                st.markdown("### Sistema de Gestão", help="Bem-vindo ao sistema")
                 usuario = st.text_input("👤 Usuário", placeholder="Digite seu usuário")
                 senha = st.text_input("🔒 Senha", type="password", placeholder="Digite sua senha")
                 submitted = st.form_submit_button("Entrar", use_container_width=True)
