@@ -1,28 +1,30 @@
 codigo,nome,categoria,descricao,preco_custo,preco_venda,quantidade,imagem_path,cor,tamanho
-1,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,40
-2,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,41
-3,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,42
-4,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,40
-5,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,41
-6,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,42
-7,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,40
-8,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,41
-9,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,42
-10,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,35
-11,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,36
-12,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,37
-13,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,35
-14,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,36
-15,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,37
-16,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,40
-17,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,41
-18,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,42
-19,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,40
-20,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,41
-21,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,42
-22,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,35
-23,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,36
-24,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,37
-25,Nike Shox,Calçados,Preto com vermelho,50.0,100.0,5,,Preota,40
-26,Nikezin,Calçados,Nike shox preto,50.0,100.0,5,a-photo-of-the-christ-the-redeemer-statu_j489NvjcTESj9ldEM4-QQw_UosFEBSuS7CGivBfNOP8_w.jpeg,Preto,40
+1,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,40.0
+2,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,41.0
+3,Tênis Olympikus impacto,Calçados,Azul Escuro com Verde,60.0,120.0,1,verde.png,Azul Escuro com Verde,42.0
+4,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,40.0
+5,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,41.0
+6,Tênis Olympikus impacto,Calçados,Vermelho com Preto,60.0,120.0,1,vermelho.png,Vermelho com Preto,42.0
+7,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,40.0
+8,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,41.0
+9,Tênis Olympikus impacto,Calçados,Preto com Preto,60.0,120.0,1,Preto.png,Preto com Preto,42.0
+10,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,35.0
+11,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,36.0
+12,Tenis Meia - Feminino,Calçados,Preto com Preto,50.0,100.0,1,Captura de tela 2025-03-17 220738.png,Preto com Preto,37.0
+13,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,35.0
+14,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,36.0
+15,Tenis Meia - Feminino,Calçados,Preto com Branco,50.0,100.0,1,Captura de tela 2025-03-17 220742.png,Preto com Branco,37.0
+16,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,40.0
+17,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,41.0
+18,Nike Zoom Refletivo,Calçados,Azul com Azul,80.0,180.0,1,Captura de tela 2025-03-17 221554.png,Azul com Azul,42.0
+19,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,40.0
+20,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,41.0
+21,Nike Zoom Refletivo,Calçados,Cinza com Branco,80.0,180.0,1,Captura de tela 2025-03-17 221613.png,Cinza com Branco,42.0
+22,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,35.0
+23,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,36.0
+24,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,37.0
+25,Nike Shox,Calçados,Preto com vermelho,50.0,100.0,5,,Preota,40.0
+26,Nikezin,Calçados,Nike shox preto,50.0,100.0,5,a-photo-of-the-christ-the-redeemer-statu_j489NvjcTESj9ldEM4-QQw_UosFEBSuS7CGivBfNOP8_w.jpeg,Preto,40.0
 27,Nikezin,Calçados,Nike shox preto,50.0,100.0,0,a-photo-of-the-christ-the-redeemer-statu_j489NvjcTESj9ldEM4-QQw_UosFEBSuS7CGivBfNOP8_w.jpeg,,
+28,Nike shox 1,Calçados,Bonito,50.0,100.0,0,WhatsApp Image 2024-07-04 at 13.18.14.jpeg,,
+29,Nike shox 1,Calçados,Bonito,50.0,100.0,0,WhatsApp Image 2024-07-04 at 13.18.14.jpeg,,
