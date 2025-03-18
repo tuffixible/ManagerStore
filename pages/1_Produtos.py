@@ -284,15 +284,19 @@ with tab3:
 
     df = load_data("produtos")
     if not df.empty:
-        # Métricas com ícones
+        # Calcular valores totais
         total_produtos = len(df)
         produtos_baixo_estoque = len(df[df['quantidade'] <= 5])
         valor_total_estoque = (df['preco_venda'] * df['quantidade']).sum()
+        custo_total_estoque = (df['preco_custo'] * df['quantidade']).sum()
+        margem_total = valor_total_estoque - custo_total_estoque
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4, col5 = st.columns(5)
         col1.metric("📦 Total de Produtos", total_produtos)
         col2.metric("⚠️ Produtos em Baixa", produtos_baixo_estoque)
-        col3.metric("💰 Valor em Estoque", f"R$ {valor_total_estoque:.2f}")
+        col3.metric("💰 Valor Total Venda", f"R$ {valor_total_estoque:.2f}")
+        col4.metric("💵 Custo Total", f"R$ {custo_total_estoque:.2f}")
+        col5.metric("📈 Margem Total", f"R$ {margem_total:.2f}")
 
         # Tabela de estoque estilizada
         st.markdown("""
@@ -306,31 +310,63 @@ with tab3:
         </style>
         """, unsafe_allow_html=True)
 
-        # Adicionar checkbox para seleção múltipla
+        # Seleção de produtos para ações
         selected = st.multiselect(
-            "Selecione produtos para excluir",
+            "Selecione produtos para gerenciar",
             df['nome'].unique(),
             key="stock_select"
         )
 
-        if st.button("🗑️ Excluir Produtos Selecionados") and selected:
-            if st.button("Confirmar exclusão?"):
-                df = df[~df['nome'].isin(selected)]
-                save_data(df, "produtos")
-                st.success("✅ Produtos excluídos com sucesso!")
-                st.rerun()
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🗑️ Excluir Selecionados") and selected:
+                if st.button("Confirmar exclusão?"):
+                    df = df[~df['nome'].isin(selected)]
+                    save_data(df, "produtos")
+                    st.success("✅ Produtos excluídos com sucesso!")
+                    st.rerun()
+        
+        with col2:
+            if st.button("✏️ Editar Selecionados") and selected:
+                st.session_state.editing = True
 
-        st.dataframe(
-            df[['nome', 'cor', 'tamanho', 'quantidade', 'preco_venda']],
-            column_config={
-                "nome": "📦 Produto",
-                "cor": "🎨 Cor",
-                "tamanho": "📏 Tamanho",
-                "quantidade": st.column_config.NumberColumn("📊 Estoque"),
-                "preco_venda": st.column_config.NumberColumn("💰 Preço", format="R$ %.2f")
-            },
-            hide_index=True
-        )
+        # Tabela editável se estiver no modo de edição
+        if hasattr(st.session_state, 'editing') and st.session_state.editing and selected:
+            edited_df = st.data_editor(
+                df[df['nome'].isin(selected)],
+                column_config={
+                    "nome": "📦 Produto",
+                    "cor": "🎨 Cor",
+                    "tamanho": "📏 Tamanho",
+                    "quantidade": st.column_config.NumberColumn("📊 Estoque"),
+                    "preco_custo": st.column_config.NumberColumn("💰 Preço Custo", format="R$ %.2f"),
+                    "preco_venda": st.column_config.NumberColumn("💰 Preço Venda", format="R$ %.2f")
+                },
+                hide_index=True,
+                key="edit_table"
+            )
+            
+            if st.button("💾 Salvar Alterações"):
+                # Atualizar o DataFrame original com as alterações
+                df.update(edited_df)
+                save_data(df, "produtos")
+                st.success("✅ Alterações salvas com sucesso!")
+                st.session_state.editing = False
+                st.rerun()
+        else:
+            # Exibir tabela normal
+            st.dataframe(
+                df[['nome', 'cor', 'tamanho', 'quantidade', 'preco_custo', 'preco_venda']],
+                column_config={
+                    "nome": "📦 Produto",
+                    "cor": "🎨 Cor",
+                    "tamanho": "📏 Tamanho",
+                    "quantidade": st.column_config.NumberColumn("📊 Estoque"),
+                    "preco_custo": st.column_config.NumberColumn("💰 Preço Custo", format="R$ %.2f"),
+                    "preco_venda": st.column_config.NumberColumn("💰 Preço Venda", format="R$ %.2f")
+                },
+                hide_index=True
+            )
 
 if __name__ == "__main__":
     st.stop()
