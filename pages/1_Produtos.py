@@ -137,12 +137,14 @@ with tab1:
                 st.markdown("</div>", unsafe_allow_html=True)
                 variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
         
-        if st.button("➕ Adicionar Variante", key="form_add_variant_btn"):
-            st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
-            st.rerun()
-
         submit = st.form_submit_button("📥 Cadastrar Produto")
-        if submit:
+        
+    # Add variant button outside the form
+    if st.button("➕ Adicionar Variante", key="add_variant_btn"):
+        st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
+        st.rerun()
+        
+    if submit:
             if validate_product_data(nome, preco_custo, preco_venda, 0):
                 df = load_data("produtos")
                 for variante in variantes:
