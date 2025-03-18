@@ -113,33 +113,29 @@ with tab1:
 
         # Sistema de múltiplas variantes
         st.subheader("🎨 Variantes do Produto")
-
-        st.subheader("🎨 Variantes do Produto")
-        if 'num_variantes' not in st.session_state:
-            st.session_state.num_variantes = 1
+        
+        if 'variantes' not in st.session_state:
+            st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
             
-        col_var1, col_var2 = st.columns([0.9, 0.1])
-        with col_var1:
-            st.write(f"Número de variantes: {st.session_state.num_variantes}")
-        with col_var2:
-            if st.button("➕"):
-                st.session_state.num_variantes += 1
-                st.rerun()
-
         variantes = []
-        for i in range(st.session_state.num_variantes):
+        for i, variante in enumerate(st.session_state.variantes):
             with st.container():
-                col1, col2, col3, col4 = st.columns([1, 1, 1, 0.2])
-                with col1:
-                    cor = st.text_input(f"Cor", key=f"cor_{i}", placeholder="Digite a cor")
-                with col2:
-                    tamanho = st.text_input(f"Tamanho", key=f"tamanho_{i}", placeholder="Digite o tamanho")
-                with col3:
-                    quantidade = st.number_input(f"Quantidade", min_value=0, key=f"qtd_{i}")
-                with col4:
-                    if st.button("❌", key=f"del_{i}") and st.session_state.num_variantes > 1:
-                        st.session_state.num_variantes -= 1
+                cols = st.columns([3, 3, 3, 1, 1])
+                with cols[0]:
+                    cor = st.text_input("Cor", value=variante["cor"], key=f"cor_{i}", placeholder="Digite a cor")
+                with cols[1]:
+                    tamanho = st.text_input("Tamanho", value=variante["tamanho"], key=f"tamanho_{i}", placeholder="Digite o tamanho")
+                with cols[2]:
+                    quantidade = st.number_input("Quantidade", value=variante["quantidade"], min_value=0, key=f"qtd_{i}")
+                with cols[3]:
+                    if st.button("➕", key=f"add_{i}"):
+                        st.session_state.variantes.insert(i + 1, {"cor": "", "tamanho": "", "quantidade": 0})
                         st.rerun()
+                with cols[4]:
+                    if len(st.session_state.variantes) > 1 and st.button("❌", key=f"del_{i}"):
+                        st.session_state.variantes.pop(i)
+                        st.rerun()
+                        
                 variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
 
         for i in range(num_variantes):

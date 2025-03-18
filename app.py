@@ -24,20 +24,57 @@ st.markdown("""
     text-shadow: 0 0 5px rgba(255,255,255,0.8);
 }
 @keyframes fly {
-    0% { left: -50px; top: 100px; transform: scaleX(1) rotateZ(10deg); }
-    25% { left: 40%; top: 80%; transform: scaleX(1) rotateZ(-5deg); }
-    26% { transform: scaleX(-1) rotateZ(5deg); }
-    50% { left: 95%; top: 30%; transform: scaleX(-1) rotateZ(-10deg); }
-    51% { transform: scaleX(1) rotateZ(5deg); }
-    75% { left: 40%; top: 20%; transform: scaleX(1) rotateZ(-5deg); }
-    100% { left: -50px; top: 100px; transform: scaleX(1) rotateZ(10deg); }
+    0% { 
+        left: -50px; 
+        top: 100px; 
+        transform: scaleX(1) rotate(15deg); 
+    }
+    23% { 
+        left: 40%; 
+        top: 80%; 
+        transform: scaleX(1) rotate(-5deg); 
+    }
+    25% { 
+        left: 45%; 
+        top: 75%; 
+        transform: scaleX(-1) rotate(5deg); 
+    }
+    48% { 
+        left: 95%; 
+        top: 30%; 
+        transform: scaleX(-1) rotate(-10deg); 
+    }
+    50% { 
+        left: 95%; 
+        top: 35%; 
+        transform: scaleX(-1) rotate(5deg); 
+    }
+    73% { 
+        left: 45%; 
+        top: 20%; 
+        transform: scaleX(-1) rotate(-5deg); 
+    }
+    75% { 
+        left: 40%; 
+        top: 25%; 
+        transform: scaleX(1) rotate(5deg); 
+    }
+    98% { 
+        left: -45px; 
+        top: 95px; 
+        transform: scaleX(1) rotate(-5deg); 
+    }
+    100% { 
+        left: -50px; 
+        top: 100px; 
+        transform: scaleX(1) rotate(15deg); 
+    }
 }
 @keyframes flap {
-    0% { transform: scale(1, 1); }
-    25% { transform: scale(1.1, 0.8); }
-    50% { transform: scale(1, 1); }
-    75% { transform: scale(0.9, 1.2); }
-    100% { transform: scale(1, 1); }
+    0%, 100% { transform: scale(1, 1) translateY(0); }
+    25% { transform: scale(1.1, 0.9) translateY(-2px); }
+    50% { transform: scale(1, 1) translateY(0); }
+    75% { transform: scale(1.1, 0.9) translateY(2px); }
 }
 </style>
 """, unsafe_allow_html=True)

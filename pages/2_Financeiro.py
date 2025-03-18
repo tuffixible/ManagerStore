@@ -65,16 +65,7 @@ with tab1:
             
         submitted = st.form_submit_button("Registrar")
 
-    # Calculadora rápida fora do form
-    col_calc1, col_calc2 = st.columns(2)
-    with col_calc1:
-        if st.button("+ R$ 100"):
-            st.session_state.valor_input += 100
-    with col_calc2:
-        if st.button("+ R$ 1000"):
-            st.session_state.valor_input += 1000
-
-        if submitted:
+    if submitted:
             if valor > 0:
                 df = load_data("financeiro")
 
@@ -121,20 +112,18 @@ with tab2:
 
         # Exibir movimentações
         df_display = df[['data', 'tipo', 'categoria', 'descricao', 'valor']]
-        # Adiciona coluna de seleção
-        df_display['Selecionar'] = False
+        selected_indices = []
+        df_display = df_display.copy()
         selected_rows = st.data_editor(
             df_display,
             hide_index=True,
             column_config={
-                "Selecionar": st.column_config.CheckboxColumn(default=False),
-                "data": "Data",
-                "tipo": "Tipo",
+                "data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY HH:mm"),
+                "tipo": st.column_config.SelectboxColumn("Tipo", options=["entrada", "saída"]),
                 "categoria": "Categoria",
                 "descricao": "Descrição",
                 "valor": st.column_config.NumberColumn("Valor", format="R$ %.2f")
-            },
-            disabled=["data", "tipo", "categoria", "descricao", "valor"]
+            }
         )
         
         # Botões de ação
