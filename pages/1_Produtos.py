@@ -44,9 +44,9 @@ with tab1:
                 preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
             
             with col2:
-            quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
-            descricao = st.text_area("Descrição")
-            imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+                quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
+                descricao = st.text_area("Descrição")
+                imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
         
         submitted = st.form_submit_button("Cadastrar Produto")
         
