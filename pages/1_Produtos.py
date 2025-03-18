@@ -102,24 +102,42 @@ with tab2:
         if st.session_state.get('mobile_view') is None:
             st.session_state.mobile_view = st.checkbox('Visualização para celular')
 
-        # Agrupar produtos por nome
-        produtos_agrupados = df.groupby('nome')
+        import time
+        if 'image_index' not in st.session_state:
+            st.session_state.image_index = {}
+            st.session_state.last_update = {}
+
+        # Agrupar produtos por nome e cor
+        produtos_agrupados = df.groupby(['nome', 'cor'])
         
         # Define o número de colunas com base no tipo de visualização
         num_cols = 1 if st.session_state.mobile_view else 3
         cols = st.columns(num_cols)
         col_index = 0
         
-        for nome_produto, grupo in produtos_agrupados:
+        for (nome_produto, cor), grupo in produtos_agrupados:
             with cols[col_index % num_cols]:
                 with st.container():
                     st.subheader(nome_produto)
                     
-                    # Mostrar primeira imagem do grupo
-                    primeira_imagem = grupo.iloc[0]['imagem_path']
-                    if primeira_imagem:
+                    # Gerenciar carrossel de imagens para produtos com mesmo nome
+                    produto_key = nome_produto
+                    if produto_key not in st.session_state.image_index:
+                        st.session_state.image_index[produto_key] = 0
+                        st.session_state.last_update[produto_key] = time.time()
+
+                    # Atualizar índice da imagem a cada 5 segundos
+                    current_time = time.time()
+                    if current_time - st.session_state.last_update[produto_key] >= 5:
+                        todas_imagens = df[df['nome'] == nome_produto]['imagem_path'].unique()
+                        st.session_state.image_index[produto_key] = (st.session_state.image_index[produto_key] + 1) % len(todas_imagens)
+                        st.session_state.last_update[produto_key] = current_time
+                    
+                    # Mostrar imagem atual
+                    imagem_atual = grupo.iloc[0]['imagem_path']
+                    if imagem_atual:
                         try:
-                            st.image(f"uploads/{primeira_imagem}", use_container_width=True)
+                            st.image(f"uploads/{imagem_atual}", use_container_width=True)
                         except:
                             st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     else:
@@ -127,20 +145,19 @@ with tab2:
                     
                     # Informações comuns
                     st.write(f"**Categoria:** {grupo.iloc[0]['categoria']}")
+                    st.write(f"**Cor:** {cor}")
                     st.write(f"**Preço:** R$ {grupo.iloc[0]['preco_venda']:.2f}")
                     
-                    # Variações por cor
-                    st.write("**Variações:**")
+                    # Variações por tamanho
+                    st.write("**Tamanhos disponíveis:**")
                     for _, variacao in grupo.iterrows():
-                        with st.expander(f"Cor: {variacao['cor']}"):
-                            st.write(f"**Tamanho:** {variacao['tamanho']}")
-                            st.write(f"**Quantidade:** {variacao['quantidade']}")
-                            if variacao['quantidade'] <= 5:
-                                st.warning("Estoque Baixo!")
-                            if st.button(f"Excluir", key=f"del_{variacao.name}"):
-                                df = df.drop(variacao.name)
-                                save_data(df, "produtos")
-                                st.rerun()
+                        st.write(f"- Tamanho {variacao['tamanho']}: {variacao['quantidade']} unidades")
+                        if variacao['quantidade'] <= 5:
+                            st.warning("Estoque Baixo!")
+                        if st.button(f"Excluir", key=f"del_{variacao.name}"):
+                            df = df.drop(variacao.name)
+                            save_data(df, "produtos")
+                            st.rerun()
                     
                     st.divider()
                     
