@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from utils import load_data, save_data, validate_product_data
@@ -59,6 +58,17 @@ st.markdown("""
     border-radius: 10px;
     margin: 10px 0;
 }
+.flying-bird {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    animation: fly 10s linear infinite;
+}
+@keyframes fly {
+    0% { left: 50px; top: 50px; }
+    50% { left: 95%; top: 20%; }
+    100% { left: 50px; top: 50px; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -82,19 +92,19 @@ with tab1:
 
         # Sistema de múltiplas variantes
         st.subheader("🎨 Variantes do Produto")
-        
+
         num_variantes = st.number_input("Número de variantes", min_value=1, value=1, key="num_var", on_change=None)
         if "num_variantes" not in st.session_state:
             st.session_state.num_variantes = num_variantes
-        
+
         variantes = []
         if 'previous_num_variantes' not in st.session_state:
             st.session_state.previous_num_variantes = num_variantes
-        
+
         if st.session_state.previous_num_variantes != num_variantes:
             st.session_state.previous_num_variantes = num_variantes
             st.rerun()
-            
+
         for i in range(num_variantes):
             st.markdown(f"""
             <div style='background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -105,7 +115,7 @@ with tab1:
                 <h4>Variante {i+1}</h4>
             </div>
             """, unsafe_allow_html=True)
-            
+
             cols = st.columns(3)
             with cols[0]:
                 cor = st.text_input(f"Cor", key=f"cor_{i}", placeholder="Digite a cor")
@@ -118,7 +128,7 @@ with tab1:
         if st.form_submit_button("📥 Cadastrar Produto"):
             if validate_product_data(nome, preco_custo, preco_venda, 0):
                 df = load_data("produtos")
-                
+
                 for variante in variantes:
                     novo_produto = {
                         'codigo': len(df) + 1,
@@ -132,13 +142,13 @@ with tab1:
                         'quantidade': variante['quantidade'],
                         'imagem_path': imagem.name if imagem else ''
                     }
-                    
+
                     if imagem:
                         with open(f"uploads/{imagem.name}", "wb") as f:
                             f.write(imagem.getbuffer())
 
                     df = pd.concat([df, pd.DataFrame([novo_produto])], ignore_index=True)
-                
+
                 save_data(df, "produtos")
                 st.success("✅ Produto e variantes cadastrados com sucesso!")
 
@@ -173,17 +183,17 @@ with tab2:
                     st.markdown(f"## {nome_produto}")
                 with col2:
                     cor_titulo = st.color_picker("", "#000000", key=f"color_{nome_produto}")
-                
+
                 # Botão de exclusão
                 col_del1, col_del2 = st.columns([3,1])
                 with col_del2:
                     delete_key = f"del_{nome_produto}"
                     if delete_key not in st.session_state:
                         st.session_state[delete_key] = False
-                        
+
                     if st.button(f"🗑️ Excluir", key=f"btn_{delete_key}"):
                         st.session_state[delete_key] = True
-                        
+
                     if st.session_state[delete_key]:
                         if st.button("❌ Confirmar exclusão?", key=f"confirm_{delete_key}"):
                             df = df[df['nome'] != nome_produto]
@@ -193,7 +203,7 @@ with tab2:
                         if st.button("↩️ Cancelar", key=f"cancel_{delete_key}"):
                             st.session_state[delete_key] = False
                             st.rerun()
-                
+
                 # Container mais compacto para cada produto
                 st.markdown(f"""
                 <div style='
@@ -277,21 +287,21 @@ with tab3:
         }
         </style>
         """, unsafe_allow_html=True)
-        
+
         # Adicionar checkbox para seleção múltipla
         selected = st.multiselect(
             "Selecione produtos para excluir",
             df['nome'].unique(),
             key="stock_select"
         )
-        
+
         if st.button("🗑️ Excluir Produtos Selecionados") and selected:
             if st.confirm(f"Tem certeza que deseja excluir {len(selected)} produtos?"):
                 df = df[~df['nome'].isin(selected)]
                 save_data(df, "produtos")
                 st.success("✅ Produtos excluídos com sucesso!")
                 st.experimental_rerun()
-        
+
         st.dataframe(
             df[['nome', 'cor', 'tamanho', 'quantidade', 'preco_venda']],
             column_config={
@@ -303,3 +313,14 @@ with tab3:
             },
             hide_index=True
         )
+
+
+# Add flying bird if enabled
+if 'show_easter_egg' not in st.session_state:
+    st.session_state.show_easter_egg = True
+
+if st.session_state.show_easter_egg:
+    st.markdown('<div class="flying-bird">🐦</div>', unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    st.stop()

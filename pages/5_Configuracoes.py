@@ -1,4 +1,3 @@
-
 import streamlit as st
 from auth import check_password
 import os
@@ -68,4 +67,16 @@ enable_notifications = st.checkbox("Ativar notificações de atualizações")
 if st.button("Salvar Configurações de WhatsApp"):
     # Aqui você pode implementar a lógica para salvar as configurações
     st.success("✅ Configurações de WhatsApp salvas com sucesso!")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Easter Egg Settings
+st.markdown('<div class="config-card">', unsafe_allow_html=True)
+st.subheader("🎮 Easter Eggs")
+if 'show_easter_egg' not in st.session_state:
+    st.session_state.show_easter_egg = True
+
+show_easter_egg = st.toggle("Mostrar pássaro voador", value=st.session_state.show_easter_egg)
+if show_easter_egg != st.session_state.show_easter_egg:
+    st.session_state.show_easter_egg = show_easter_egg
+    st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
