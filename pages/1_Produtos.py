@@ -102,38 +102,49 @@ with tab2:
         if st.session_state.get('mobile_view') is None:
             st.session_state.mobile_view = st.checkbox('Visualização para celular')
 
+        # Agrupar produtos por nome
+        produtos_agrupados = df.groupby('nome')
+        
         # Define o número de colunas com base no tipo de visualização
         num_cols = 1 if st.session_state.mobile_view else 3
         cols = st.columns(num_cols)
-        for index, row in df.iterrows():
-            with cols[index % num_cols]:
+        col_index = 0
+        
+        for nome_produto, grupo in produtos_agrupados:
+            with cols[col_index % num_cols]:
                 with st.container():
-                    # Imagem do produto
-                    if row['imagem_path']:
+                    st.subheader(nome_produto)
+                    
+                    # Mostrar primeira imagem do grupo
+                    primeira_imagem = grupo.iloc[0]['imagem_path']
+                    if primeira_imagem:
                         try:
-                            st.image(f"uploads/{row['imagem_path']}", use_container_width=True)
+                            st.image(f"uploads/{primeira_imagem}", use_container_width=True)
                         except:
                             st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     else:
                         st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     
-                    # Informações do produto
-                    st.subheader(row['nome'])
-                    st.write(f"**Categoria:** {row['categoria']}")
-                    st.write(f"**Cor:** {row['cor']}")
-                    st.write(f"**Tamanho:** {row['tamanho']}")
-                    st.write(f"**Preço:** R$ {row['preco_venda']:.2f}")
-                    st.write(f"**Quantidade:** {row['quantidade']}")
+                    # Informações comuns
+                    st.write(f"**Categoria:** {grupo.iloc[0]['categoria']}")
+                    st.write(f"**Preço:** R$ {grupo.iloc[0]['preco_venda']:.2f}")
                     
-                    if row['quantidade'] <= 5:
-                        st.warning("Estoque Baixo!")
-                    
-                    if st.button(f"Excluir", key=f"del_{index}"):
-                        df = df.drop(index)
-                        save_data(df, "produtos")
-                        st.rerun()
+                    # Variações por cor
+                    st.write("**Variações:**")
+                    for _, variacao in grupo.iterrows():
+                        with st.expander(f"Cor: {variacao['cor']}"):
+                            st.write(f"**Tamanho:** {variacao['tamanho']}")
+                            st.write(f"**Quantidade:** {variacao['quantidade']}")
+                            if variacao['quantidade'] <= 5:
+                                st.warning("Estoque Baixo!")
+                            if st.button(f"Excluir", key=f"del_{variacao.name}"):
+                                df = df.drop(variacao.name)
+                                save_data(df, "produtos")
+                                st.rerun()
                     
                     st.divider()
+                    
+            col_index += 1
     else:
         st.info("Nenhum produto cadastrado")
 
