@@ -91,11 +91,11 @@ with tab2:
                     # Imagem do produto
                     if row['imagem_path']:
                         try:
-                            st.image(f"uploads/{row['imagem_path']}", use_column_width=True)
+                            st.image(f"uploads/{row['imagem_path']}", use_container_width=True)
                         except:
-                            st.image("https://placehold.co/200x200?text=Sem+Imagem", use_column_width=True)
+                            st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     else:
-                        st.image("https://placehold.co/200x200?text=Sem+Imagem", use_column_width=True)
+                        st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     
                     # Informações do produto
                     st.subheader(row['nome'])
