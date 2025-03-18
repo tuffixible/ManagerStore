@@ -14,16 +14,16 @@ st.set_page_config(
 # Add global bird animation CSS
 st.markdown("""
 <style>
-.flying-bird {
+.fashion-item {
     position: fixed;
-    font-size: 24px;
+    font-size: 32px;
     z-index: 1000;
     transform-origin: center;
-    animation: fly 15s linear infinite, flap 0.5s ease-in-out infinite;
+    animation: float 15s linear infinite;
     cursor: pointer;
     text-shadow: 0 0 5px rgba(255,255,255,0.8);
 }
-@keyframes fly {
+@keyframes float {
     0% { 
         left: -50px; 
         top: 100px; 
@@ -84,9 +84,12 @@ if 'show_easter_egg' not in st.session_state:
     st.session_state.show_easter_egg = True
 
 if st.session_state.show_easter_egg:
-    st.markdown("""
-        <div class="flying-bird" onclick="this.style.animationPlayState=this.style.animationPlayState==='paused'?'running':'paused'">
-            🦅
+    import random
+    fashion_items = ['👕', '👖', '👗', '👚', '👔', '👠', '👟', '👢', '👜', '🧢']
+    random_item = random.choice(fashion_items)
+    st.markdown(f"""
+        <div class="fashion-item" onclick="this.style.animationPlayState=this.style.animationPlayState==='paused'?'running':'paused'">
+            {random_item}
         </div>
     """, unsafe_allow_html=True)
 

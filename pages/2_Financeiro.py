@@ -114,6 +114,9 @@ with tab2:
         df_display = df[['data', 'tipo', 'categoria', 'descricao', 'valor']]
         selected_indices = []
         df_display = df_display.copy()
+        # Convert string to datetime for display
+        df_display['data'] = pd.to_datetime(df_display['data'])
+        
         selected_rows = st.data_editor(
             df_display,
             hide_index=True,

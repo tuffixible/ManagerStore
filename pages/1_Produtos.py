@@ -104,11 +104,53 @@ with tab1:
     if 'variantes' not in st.session_state:
         st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
 
-    col_var1, col_var2 = st.columns([0.9, 0.1])
-    with col_var2:
-        if st.button("➕ Adicionar Variante"):
-            st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
-            st.rerun()
+    # Display variants side by side
+    cols = st.columns(3)
+    for i, variante in enumerate(st.session_state.variantes):
+        with st.container():
+            st.markdown("""
+            <div style='
+                background: white;
+                padding: 10px;
+                border-radius: 8px;
+                margin: 5px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            '>""", unsafe_allow_html=True)
+            cols = st.columns([1,1,1])
+            with cols[0]:
+                cor = st.text_input("Cor", value=variante["cor"], key=f"cor_{i}", placeholder="Digite a cor")
+            with cols[1]:
+                tamanho = st.text_input("Tamanho", value=variante["tamanho"], key=f"tamanho_{i}", placeholder="Digite o tamanho")
+            with cols[2]:
+                quantidade = st.number_input("Quantidade", value=variante["quantidade"], min_value=0, key=f"qtd_{i}")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+    # Add variant button with glow effect
+    st.markdown("""
+    <style>
+    .add-variant-btn {
+        background: linear-gradient(145deg, #4CAF50, #45a049);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        margin: 20px auto;
+        display: block;
+        width: 200px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .add-variant-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    if st.button("➕ Adicionar Variante", key="add_variant_btn"):
+        st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
+        st.rerun()
 
     with st.form("cadastro_produto", clear_on_submit=True):
         col1, col2 = st.columns(2)
