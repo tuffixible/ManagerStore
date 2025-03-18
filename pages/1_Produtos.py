@@ -9,7 +9,7 @@ if not check_password():
 st.title("Gestão de Produtos")
 
 # Tabs para diferentes funcionalidades
-tab1, tab2 = st.tabs(["Cadastro", "Lista de Produtos"]))
+tab1, tab2 = st.tabs(["Cadastro", "Lista de Produtos"])
 
 with tab1:
     st.header("Cadastro de Produtos")

@@ -3,6 +3,8 @@
 headless = true
 address = "0.0.0.0"
 port = 5000
+enableXsrfProtection = true
+enableCORS = false
 
 [theme]
 primaryColor = "#FF4B4B"
@@ -10,10 +12,6 @@ backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F0F2F6"
 textColor = "#262730"
 font = "sans serif"
-
-[server]
-enableXsrfProtection = true
-enableCORS = false
 
 [browser]
 gatherUsageStats = false
