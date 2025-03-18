@@ -83,9 +83,16 @@ with tab1:
         # Sistema de múltiplas variantes
         st.subheader("🎨 Variantes do Produto")
         
-        num_variantes = st.number_input("Número de variantes", min_value=1, value=1)
+        num_variantes = st.number_input("Número de variantes", min_value=1, value=1, key="num_var", on_change=None)
         
         variantes = []
+        if 'previous_num_variantes' not in st.session_state:
+            st.session_state.previous_num_variantes = num_variantes
+        
+        if st.session_state.previous_num_variantes != num_variantes:
+            st.session_state.previous_num_variantes = num_variantes
+            st.experimental_rerun()
+            
         for i in range(num_variantes):
             st.markdown(f"""
             <div style='background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -159,8 +166,19 @@ with tab2:
 
         for nome_produto, grupo in produtos_agrupados:
             with st.container():
-                # Personalização do título
-                cor_titulo = st.color_picker(f"Cor do título para {nome_produto}", "#000000")
+                col1, col2 = st.columns([0.9, 0.1])
+                with col1:
+                    st.markdown(f"## {nome_produto}")
+                with col2:
+                    cor_titulo = st.color_picker("", "#000000", key=f"color_{nome_produto}")
+                
+                # Botão de exclusão
+                if st.button(f"🗑️ Excluir {nome_produto}", key=f"del_{nome_produto}"):
+                    if st.confirm(f"Tem certeza que deseja excluir {nome_produto} e todas suas variantes?"):
+                        df = df[df['nome'] != nome_produto]
+                        save_data(df, "produtos")
+                        st.success(f"✅ Produto {nome_produto} excluído com sucesso!")
+                        st.experimental_rerun()
                 
                 st.markdown(f"""
                 <div style='
@@ -246,6 +264,20 @@ with tab3:
         }
         </style>
         """, unsafe_allow_html=True)
+        
+        # Adicionar checkbox para seleção múltipla
+        selected = st.multiselect(
+            "Selecione produtos para excluir",
+            df['nome'].unique(),
+            key="stock_select"
+        )
+        
+        if st.button("🗑️ Excluir Produtos Selecionados") and selected:
+            if st.confirm(f"Tem certeza que deseja excluir {len(selected)} produtos?"):
+                df = df[~df['nome'].isin(selected)]
+                save_data(df, "produtos")
+                st.success("✅ Produtos excluídos com sucesso!")
+                st.experimental_rerun()
         
         st.dataframe(
             df[['nome', 'cor', 'tamanho', 'quantidade', 'preco_venda']],
