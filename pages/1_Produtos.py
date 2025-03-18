@@ -23,6 +23,8 @@ with tab1:
                 "Categoria",
                 ["Roupas", "Calçados", "Acessórios"]
             )
+            cor = st.text_input("Cor")
+            tamanho = st.text_input("Tamanho")
             preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
             preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
         
@@ -35,12 +37,18 @@ with tab1:
         
         if submitted:
             if validate_product_data(nome, preco_custo, preco_venda, quantidade):
+                # Salvar imagem se existir
+                if imagem:
+                    with open(f"uploads/{imagem.name}", "wb") as f:
+                        f.write(imagem.getbuffer())
                 df = load_data("produtos")
                 
                 novo_produto = {
                     'codigo': len(df) + 1,
                     'nome': nome,
                     'categoria': categoria,
+                    'cor': cor,
+                    'tamanho': tamanho,
                     'descricao': descricao,
                     'preco_custo': preco_custo,
                     'preco_venda': preco_venda,
@@ -83,7 +91,14 @@ with tab2:
                 with col1:
                     st.subheader(row['nome'])
                     st.write(f"Categoria: {row['categoria']}")
+                    st.write(f"Cor: {row['cor']}")
+                    st.write(f"Tamanho: {row['tamanho']}")
                     st.write(f"Descrição: {row['descricao']}")
+                    if row['imagem_path']:
+                        try:
+                            st.image(f"uploads/{row['imagem_path']}", width=200)
+                        except:
+                            st.error("Imagem não encontrada")
                 
                 with col2:
                     st.write(f"Preço de Venda: R$ {row['preco_venda']:.2f}")
