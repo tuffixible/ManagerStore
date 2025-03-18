@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from utils import load_data, save_data, validate_product_data
 from auth import check_password
-import time
 
 if not check_password():
     st.stop()
@@ -101,16 +100,16 @@ with tab1:
 
     # Sistema de múltiplas variantes
     st.subheader("🎨 Variantes do Produto")
-    
+
     if 'variantes' not in st.session_state:
         st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
-        
+
     col_var1, col_var2 = st.columns([0.9, 0.1])
     with col_var2:
         if st.button("➕ Adicionar Variante"):
             st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
             st.rerun()
-            
+
     with st.form("cadastro_produto", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -134,7 +133,7 @@ with tab1:
                 with cols[2]:
                     quantidade = st.number_input("Quantidade", value=variante["quantidade"], min_value=0, key=f"qtd_{i}")
                 variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
-                
+
         submit = st.form_submit_button("📥 Cadastrar Produto")
         if submit:
             if validate_product_data(nome, preco_custo, preco_venda, 0):
@@ -161,53 +160,6 @@ with tab1:
                 st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
                 st.success("✅ Produto e variantes cadastrados com sucesso!")
                 st.rerun()
-
-        for i in range(num_variantes):
-            st.markdown(f"""
-            <div style='background: linear-gradient(145deg, #ffffff, #f0f0f0);
-                        padding: 20px;
-                        border-radius: 10px;
-                        margin: 10px 0;
-                        box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff;'>
-                <h4>Variante {i+1}</h4>
-            </div>
-            """, unsafe_allow_html=True)
-
-            cols = st.columns(3)
-            with cols[0]:
-                cor = st.text_input(f"Cor", key=f"cor_{i}", placeholder="Digite a cor")
-            with cols[1]:
-                tamanho = st.text_input(f"Tamanho", key=f"tamanho_{i}", placeholder="Digite o tamanho")
-            with cols[2]:
-                quantidade = st.number_input(f"Quantidade", min_value=0, key=f"qtd_{i}")
-            variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
-
-        if st.form_submit_button("📥 Cadastrar Produto"):
-            if validate_product_data(nome, preco_custo, preco_venda, 0):
-                df = load_data("produtos")
-
-                for variante in variantes:
-                    novo_produto = {
-                        'codigo': len(df) + 1,
-                        'nome': nome,
-                        'categoria': categoria,
-                        'cor': variante['cor'],
-                        'tamanho': variante['tamanho'],
-                        'descricao': descricao,
-                        'preco_custo': preco_custo,
-                        'preco_venda': preco_venda,
-                        'quantidade': variante['quantidade'],
-                        'imagem_path': imagem.name if imagem else ''
-                    }
-
-                    if imagem:
-                        with open(f"uploads/{imagem.name}", "wb") as f:
-                            f.write(imagem.getbuffer())
-
-                    df = pd.concat([df, pd.DataFrame([novo_produto])], ignore_index=True)
-
-                save_data(df, "produtos")
-                st.success("✅ Produto e variantes cadastrados com sucesso!")
 
 with tab2:
     st.header("Catálogo de Produtos")
@@ -353,11 +305,11 @@ with tab3:
         )
 
         if st.button("🗑️ Excluir Produtos Selecionados") and selected:
-            if st.confirm(f"Tem certeza que deseja excluir {len(selected)} produtos?"):
+            if st.button("Confirmar exclusão?"):
                 df = df[~df['nome'].isin(selected)]
                 save_data(df, "produtos")
                 st.success("✅ Produtos excluídos com sucesso!")
-                st.experimental_rerun()
+                st.rerun()
 
         st.dataframe(
             df[['nome', 'cor', 'tamanho', 'quantidade', 'preco_venda']],
@@ -370,7 +322,6 @@ with tab3:
             },
             hide_index=True
         )
-
 
 if __name__ == "__main__":
     st.stop()
