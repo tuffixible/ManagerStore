@@ -84,6 +84,8 @@ with tab1:
         st.subheader("🎨 Variantes do Produto")
         
         num_variantes = st.number_input("Número de variantes", min_value=1, value=1, key="num_var", on_change=None)
+        if "num_variantes" not in st.session_state:
+            st.session_state.num_variantes = num_variantes
         
         variantes = []
         if 'previous_num_variantes' not in st.session_state:
@@ -91,7 +93,7 @@ with tab1:
         
         if st.session_state.previous_num_variantes != num_variantes:
             st.session_state.previous_num_variantes = num_variantes
-            st.experimental_rerun()
+            st.rerun()
             
         for i in range(num_variantes):
             st.markdown(f"""
