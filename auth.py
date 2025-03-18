@@ -10,18 +10,40 @@ def check_password():
         st.markdown("""
         <style>
         .stApp {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: transparent;
         }
         .login-container {
-            max-width: 400px;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .big-logo {
+            width: 300px;
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
         }
         </style>
         """, unsafe_allow_html=True)
+        
+        # Carrega o vídeo de fundo se existir
+        if os.path.exists("background.mp4"):
+            st.markdown("""
+            <video autoplay muted loop id="background-video">
+                <source src="background.mp4" type="video/mp4">
+            </video>
+            """, unsafe_allow_html=True)
         
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
