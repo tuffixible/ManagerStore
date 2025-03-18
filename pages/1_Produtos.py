@@ -188,51 +188,44 @@ with tab2:
                             # Criar DataFrame para a tabela
                             df_display = pd.DataFrame(data)
                             
-                            # Exibir tabela com editor
-                            # Converter o DataFrame para os tipos corretos
-                            df_display = pd.DataFrame(data)
-                            df_display = df_display.astype({
-                                'Tamanho': str,
-                                'Quantidade': int,
-                                'Preço': str,
-                                'Status': str
-                            })
+                            # Configurar colunas para o editor
+                            column_config = {
+                                "Tamanho": st.column_config.TextColumn("Tamanho", width="medium"),
+                                "Quantidade": st.column_config.NumberColumn("Quantidade", width="small"),
+                                "Preço": st.column_config.TextColumn("Preço", width="small"),
+                                "Status": st.column_config.TextColumn("Status", width="small"),
+                                "Selecionar": st.column_config.CheckboxColumn(
+                                    "Selecionar",
+                                    default=False,
+                                    help="Selecione para vender"
+                                )
+                            }
                             
+                            # Adicionar coluna de seleção
+                            df_display['Selecionar'] = False
+                            df_display['variante_id'] = [d['Ações']['variante_id'] for d in data]
+                            df_display['preco_venda'] = [d['Ações']['preco'] for d in data]
+                            
+                            # Exibir tabela com editor
                             edited_df = st.data_editor(
-                                df_display,
-                                column_config={
-                                    "Tamanho": st.column_config.TextColumn("Tamanho", width="medium"),
-                                    "Quantidade": st.column_config.NumberColumn("Quantidade", width="small"),
-                                    "Preço": st.column_config.TextColumn("Preço", width="small"),
-                                    "Status": st.column_config.TextColumn("Status", width="small"),
-                                    "Ações": st.column_config.Column(
-                                        "Ações",
-                                        width="large",
-                                        help="Selecione para vender"
-                                    )
-                                },
+                                df_display[['Tamanho', 'Quantidade', 'Preço', 'Status', 'Selecionar']],
+                                column_config=column_config,
                                 hide_index=True,
                                 key=f"table_{cor}_{nome_produto}"
                             )
                             
-                            # Sistema de vendas
-                            selected_rows = st.data_editor(
-                                edited_df,
-                                disabled=["Tamanho", "Quantidade", "Preço", "Status"],
-                                hide_index=True,
-                                key=f"selection_{cor}_{nome_produto}"
-                            )
+                            # Filtrar linhas selecionadas
+                            selected_rows = edited_df[edited_df['Selecionar']]
                             
-                            if selected_rows is not None and len(selected_rows) > 0:
+                            if not selected_rows.empty:
                                 with st.form(key=f"venda_form_{cor}_{nome_produto}"):
                                     st.subheader("Realizar Venda", divider="green")
                                     
                                     total_venda = 0
                                     for idx, row in selected_rows.iterrows():
-                                        if row['Ações']:
-                                            variante_id = row['Ações']['variante_id']
-                                            qtd_disponivel = row['Ações']['quantidade']
-                                            preco = row['Ações']['preco']
+                                        variante_idx = df_display.index[idx]
+                                        qtd_disponivel = df_display.loc[variante_idx, 'Quantidade']
+                                        preco = float(df_display.loc[variante_idx, 'preco_venda'])
                                             
                                             col1, col2 = st.columns(2)
                                             with col1:
