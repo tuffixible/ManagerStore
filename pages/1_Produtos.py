@@ -228,18 +228,18 @@ with tab2:
                                         preco = float(df_display.loc[variante_idx, 'preco_venda'])
                                             
                                             col1, col2 = st.columns(2)
-                                            with col1:
-                                                st.text(f"Tamanho: {row['Tamanho']}")
-                                            with col2:
-                                                qtd_venda = st.number_input(
-                                                    "Quantidade",
-                                                    min_value=1,
-                                                    max_value=qtd_disponivel,
-                                                    value=1,
-                                                    key=f"qtd_{variante_id}"
-                                                )
-                                            
-                                            total_venda += qtd_venda * preco
+                                        with col1:
+                                            st.text(f"Tamanho: {row['Tamanho']}")
+                                        with col2:
+                                            qtd_venda = st.number_input(
+                                                "Quantidade",
+                                                min_value=1,
+                                                max_value=qtd_disponivel,
+                                                value=1,
+                                                key=f"qtd_{idx}"
+                                            )
+                                        
+                                        total_venda += qtd_venda * preco
                                     
                                     st.metric("Total da Venda", f"R$ {total_venda:.2f}")
                                     
