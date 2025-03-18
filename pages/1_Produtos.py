@@ -121,6 +121,26 @@ with tab2:
         # Agrupar primeiro por nome do produto
         produtos_por_nome = df.groupby('nome')
         
+        # Estilo para cards de produtos
+        st.markdown("""
+        <style>
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: 100%;
+            margin-bottom: 20px;
+        }
+        .product-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
         # Define o número de colunas com base no tipo de visualização
         num_cols = 1 if st.session_state.mobile_view else 3
         cols = st.columns(num_cols)

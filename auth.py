@@ -25,22 +25,42 @@ def check_password():
         
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
+            st.markdown("""
+            <style>
+            .login-container {
+                background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .stButton > button {
+                background: linear-gradient(145deg, #007bff, #0056b3);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+            .stButton > button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
             st.markdown('<div class="login-container">', unsafe_allow_html=True)
             with st.form("Autenticação"):
-                st.markdown("### Sistema de Gestão")
+                st.markdown("### Sistema de Gestão", help="Bem-vindo ao sistema")
                 try:
                     if os.path.exists("logo.png"):
                         st.image("logo.png", width=200)
                 except:
                     st.info("⚠️ Logo não encontrada")
-                usuario = st.text_input("👤 Usuário")
-                senha = st.text_input("🔒 Senha", type="password")
-                col1, col2 = st.columns(2)
-                with col1:
-                    submitted = st.form_submit_button("Entrar", use_container_width=True)
-                with col2:
-                    if st.form_submit_button("Configurações", use_container_width=True):
-                        st.session_state.show_config = True
+                usuario = st.text_input("👤 Usuário", placeholder="Digite seu usuário")
+                senha = st.text_input("🔒 Senha", type="password", placeholder="Digite sua senha")
+                submitted = st.form_submit_button("Entrar", use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
                 return usuario, senha, submitted
 

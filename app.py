@@ -96,7 +96,18 @@ st.sidebar.markdown("""
 - 💰 **Financeiro**: Controle de caixa
 - 📊 **Relatórios**: Análises e gráficos
 - 🤖 **Assistente IA**: Sugestões
+- ⚙️ **Configurações**: Personalização
 """)
+
+# Menu de Configurações
+if st.sidebar.page_link("⚙️ Configurações", help="Alterar configurações do sistema"):
+    st.title("⚙️ Configurações do Sistema")
+    uploaded_file = st.file_uploader("Upload da Logo", type=['png', 'jpg', 'jpeg'])
+    if uploaded_file is not None:
+        with open("logo.png", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success("✅ Logo atualizada com sucesso!")
+        st.image("logo.png", width=200)
 
 # Mensagem de boas-vindas
 st.write("""
