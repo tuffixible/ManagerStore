@@ -15,9 +15,24 @@ with tab1:
     st.header("Cadastro de Produtos")
     
     with st.form("cadastro_produto"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
+        if st.session_state.get('mobile_view', False):
+            # Layout para mobile: uma coluna
+            nome = st.text_input("Nome do Produto")
+            categoria = st.selectbox(
+                "Categoria",
+                ["Roupas", "Calçados", "Acessórios"]
+            )
+            cor = st.text_input("Cor")
+            tamanho = st.text_input("Tamanho")
+            preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
+            preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
+            quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
+            descricao = st.text_area("Descrição")
+            imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+        else:
+            # Layout para desktop: duas colunas
+            col1, col2 = st.columns(2)
+            with col1:
             nome = st.text_input("Nome do Produto")
             categoria = st.selectbox(
                 "Categoria",
@@ -83,10 +98,15 @@ with tab2:
         if nome_filter:
             df = df[df['nome'].str.contains(nome_filter, case=False)]
         
-        # Exibir produtos em grade
-        cols = st.columns(3)
+        # Exibir produtos em grade responsiva
+        if st.session_state.get('mobile_view') is None:
+            st.session_state.mobile_view = st.checkbox('Visualização para celular')
+
+        # Define o número de colunas com base no tipo de visualização
+        num_cols = 1 if st.session_state.mobile_view else 3
+        cols = st.columns(num_cols)
         for index, row in df.iterrows():
-            with cols[index % 3]:
+            with cols[index % num_cols]:
                 with st.container():
                     # Imagem do produto
                     if row['imagem_path']:
