@@ -24,3 +24,8 @@ codigo,nome,categoria,descricao,preco_custo,preco_venda,quantidade,imagem_path,c
 23,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,36.0
 24,Chinelo Coke,Calçados,Coke Varias Cores,120.0,300.0,12,Captura de tela 2025-03-17 222532.png,Varias Cores,37.0
 25,Nike Shox,Calçados,Preto com vermelho,50.0,100.0,5,,Preota,40.0
+26,teste ,Roupas,,0.0,0.0,1,,preto,40
+27,teste ,Roupas,,0.0,0.0,2,,BRAANCO,2
+28,teste ,Roupas,,0.0,0.0,3,,3,3
+29,teste ,Roupas,,0.0,0.0,4,,4,4
+30,teste ,Roupas,,0.0,0.0,5,,5,5
