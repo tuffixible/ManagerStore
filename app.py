@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 from auth import check_password
 import os
-from datetime import datetime, timedelta
-import random
 
 # Configuração inicial da página
 st.set_page_config(
@@ -13,7 +11,7 @@ st.set_page_config(
 )
 
 # Logo e título
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.title("Sistema de Gestão - Loja Xible", anchor=False)
     try:
@@ -35,7 +33,8 @@ produtos_structure = {
     'preco_custo': [],
     'preco_venda': [],
     'quantidade': [],
-    'imagem_path': []
+    'imagem_path': [],
+    'tamanho': []  # Adicionando 'tamanho' na estrutura
 }
 
 financeiro_structure = {
@@ -72,6 +71,10 @@ try:
     produtos_df = pd.read_csv("data/produtos.csv")
     financeiro_df = pd.read_csv("data/financeiro.csv")
 
+    # Convertendo a coluna 'tamanho' para int
+    if 'tamanho' in produtos_df.columns:
+        produtos_df['tamanho'] = produtos_df['tamanho'].astype(int)
+
     with col1:
         st.metric("Total de Produtos", len(produtos_df))
 
@@ -100,3 +103,24 @@ st.write("""
 ### Bem-vindo ao Sistema!
 Utilize o menu lateral para acessar todas as funcionalidades disponíveis.
 """)
+
+# Editando e mostrando o DataFrame de produtos
+st.header("Gerenciar Produtos")
+if st.button("Carregar Produtos"):
+    edited_df = st.data_editor(
+        produtos_df,
+        column_config={
+            'codigo': st.column_config.TextColumn(),
+            'nome': st.column_config.TextColumn(),
+            'categoria': st.column_config.TextColumn(),
+            'descricao': st.column_config.TextColumn(),
+            'preco_custo': st.column_config.NumberColumn(),
+            'preco_venda': st.column_config.NumberColumn(),
+            'quantidade': st.column_config.NumberColumn(),
+            'imagem_path': st.column_config.TextColumn(),
+            'tamanho': st.column_config.NumberColumn()  # Garantindo que Tamanho seja tratado como coluna numérica
+        }
+    )
+
+    # Exibir o DataFrame editado
+    st.write(edited_df)
