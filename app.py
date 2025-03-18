@@ -11,6 +11,45 @@ st.set_page_config(
     layout="wide"
 )
 
+# Add global bird animation CSS
+st.markdown("""
+<style>
+.flying-bird {
+    position: fixed;
+    font-size: 24px;
+    z-index: 1000;
+    transform-origin: center;
+    animation: fly 15s linear infinite, flap 0.5s ease-in-out infinite;
+    cursor: pointer;
+    text-shadow: 0 0 5px rgba(255,255,255,0.8);
+}
+@keyframes fly {
+    0% { left: -50px; top: 100px; transform: scaleX(1); }
+    25% { left: 40%; top: 80%; transform: scaleX(1); }
+    26% { transform: scaleX(-1); }
+    50% { left: 95%; top: 30%; transform: scaleX(-1); }
+    51% { transform: scaleX(1); }
+    75% { left: 40%; top: 20%; transform: scaleX(1); }
+    100% { left: -50px; top: 100px; transform: scaleX(1); }
+}
+@keyframes flap {
+    0%, 100% { transform: translateY(0) rotate(5deg); }
+    50% { transform: translateY(-5px) rotate(-5deg); }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Add bird if enabled in session state
+if 'show_easter_egg' not in st.session_state:
+    st.session_state.show_easter_egg = True
+
+if st.session_state.show_easter_egg:
+    st.markdown("""
+        <div class="flying-bird" onclick="this.style.animationPlayState=this.style.animationPlayState==='paused'?'running':'paused'">
+            🦅
+        </div>
+    """, unsafe_allow_html=True)
+
 # Logo e título
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:

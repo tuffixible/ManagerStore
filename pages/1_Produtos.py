@@ -99,7 +99,7 @@ tab1, tab2, tab3 = st.tabs(["📝 Cadastro", "📦 Produtos", "📊 Estoque"])
 with tab1:
     st.header("Cadastro de Produto")
 
-    with st.container():
+    with st.form("cadastro_produto", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
             nome = st.text_input("📋 Nome do Produto")
@@ -335,17 +335,6 @@ with tab3:
             hide_index=True
         )
 
-
-# Add flying bird if enabled
-if 'show_easter_egg' not in st.session_state:
-    st.session_state.show_easter_egg = True
-
-if st.session_state.show_easter_egg:
-    st.markdown("""
-        <div class="flying-bird" onclick="this.style.animationPlayState=this.style.animationPlayState==='paused'?'running':'paused'">
-            🦅
-        </div>
-    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     st.stop()
