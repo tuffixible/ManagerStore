@@ -99,6 +99,18 @@ tab1, tab2, tab3 = st.tabs(["📝 Cadastro", "📦 Produtos", "📊 Estoque"])
 with tab1:
     st.header("Cadastro de Produto")
 
+    # Sistema de múltiplas variantes
+    st.subheader("🎨 Variantes do Produto")
+    
+    if 'variantes' not in st.session_state:
+        st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
+        
+    col_var1, col_var2 = st.columns([0.9, 0.1])
+    with col_var2:
+        if st.button("➕ Adicionar Variante"):
+            st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
+            st.rerun()
+            
     with st.form("cadastro_produto", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -111,32 +123,44 @@ with tab1:
             descricao = st.text_area("📝 Descrição")
             imagem = st.file_uploader("🖼️ Imagem do Produto", type=['jpg', 'jpeg', 'png'])
 
-        # Sistema de múltiplas variantes
-        st.subheader("🎨 Variantes do Produto")
-        
-        if 'variantes' not in st.session_state:
-            st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
-            
         variantes = []
         for i, variante in enumerate(st.session_state.variantes):
             with st.container():
-                cols = st.columns([3, 3, 3, 1, 1])
+                cols = st.columns([4, 4, 4])
                 with cols[0]:
                     cor = st.text_input("Cor", value=variante["cor"], key=f"cor_{i}", placeholder="Digite a cor")
                 with cols[1]:
                     tamanho = st.text_input("Tamanho", value=variante["tamanho"], key=f"tamanho_{i}", placeholder="Digite o tamanho")
                 with cols[2]:
                     quantidade = st.number_input("Quantidade", value=variante["quantidade"], min_value=0, key=f"qtd_{i}")
-                with cols[3]:
-                    if st.button("➕", key=f"add_{i}"):
-                        st.session_state.variantes.insert(i + 1, {"cor": "", "tamanho": "", "quantidade": 0})
-                        st.rerun()
-                with cols[4]:
-                    if len(st.session_state.variantes) > 1 and st.button("❌", key=f"del_{i}"):
-                        st.session_state.variantes.pop(i)
-                        st.rerun()
-                        
                 variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
+                
+        submit = st.form_submit_button("📥 Cadastrar Produto")
+        if submit:
+            if validate_product_data(nome, preco_custo, preco_venda, 0):
+                df = load_data("produtos")
+                for variante in variantes:
+                    if variante["cor"] or variante["tamanho"]:  # Only add non-empty variants
+                        novo_produto = {
+                            'codigo': len(df) + 1,
+                            'nome': nome,
+                            'categoria': categoria,
+                            'cor': variante['cor'],
+                            'tamanho': variante['tamanho'],
+                            'descricao': descricao,
+                            'preco_custo': preco_custo,
+                            'preco_venda': preco_venda,
+                            'quantidade': variante['quantidade'],
+                            'imagem_path': imagem.name if imagem else ''
+                        }
+                        if imagem:
+                            with open(f"uploads/{imagem.name}", "wb") as f:
+                                f.write(imagem.getbuffer())
+                        df = pd.concat([df, pd.DataFrame([novo_produto])], ignore_index=True)
+                save_data(df, "produtos")
+                st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
+                st.success("✅ Produto e variantes cadastrados com sucesso!")
+                st.rerun()
 
         for i in range(num_variantes):
             st.markdown(f"""
