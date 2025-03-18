@@ -226,8 +226,8 @@ with tab2:
                                         variante_idx = df_display.index[idx]
                                         qtd_disponivel = df_display.loc[variante_idx, 'Quantidade']
                                         preco = float(df_display.loc[variante_idx, 'preco_venda'])
-                                            
-                                            col1, col2 = st.columns(2)
+                                        
+                                        col1, col2 = st.columns(2)
                                         with col1:
                                             st.text(f"Tamanho: {row['Tamanho']}")
                                         with col2:
