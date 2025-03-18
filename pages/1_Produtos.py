@@ -14,21 +14,30 @@ tab1, tab2, tab3 = st.tabs(["Cadastro", "Lista de Produtos", "Controle de Estoqu
 with tab1:
     st.header("Cadastro de Produtos")
     
+    # Inicializar state para variantes
+    if 'variants' not in st.session_state:
+        st.session_state.variants = [{"cor": "", "tamanho": "", "quantidade": 0}]
+
     with st.form("cadastro_produto"):
-        if st.session_state.get('mobile_view', False):
-            # Layout para mobile: uma coluna
-            nome = st.text_input("Nome do Produto")
-            categoria = st.selectbox(
-                "Categoria",
-                ["Roupas", "Calçados", "Acessórios"]
-            )
-            cor = st.text_input("Cor")
-            tamanho = st.text_input("Tamanho")
-            preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
-            preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
-            quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
-            descricao = st.text_area("Descrição")
-            imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+        nome = st.text_input("Nome do Produto")
+        categoria = st.selectbox(
+            "Categoria",
+            ["Roupas", "Calçados", "Acessórios"]
+        )
+        preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
+        preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
+        descricao = st.text_area("Descrição")
+        imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
+
+        st.subheader("Variantes do Produto")
+        for i, variant in enumerate(st.session_state.variants):
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.session_state.variants[i]["cor"] = st.text_input("Cor", key=f"cor_{i}", value=variant["cor"])
+            with col2:
+                st.session_state.variants[i]["tamanho"] = st.text_input("Tamanho", key=f"tamanho_{i}", value=variant["tamanho"])
+            with col3:
+                st.session_state.variants[i]["quantidade"] = st.number_input("Quantidade", key=f"qtd_{i}", min_value=0, step=1, value=variant["quantidade"])
         else:
             # Layout para desktop: duas colunas
             col1, col2 = st.columns(2)
@@ -48,30 +57,44 @@ with tab1:
                 descricao = st.text_area("Descrição")
                 imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
         
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.form_submit_button("+ Adicionar Variante"):
+                st.session_state.variants.append({"cor": "", "tamanho": "", "quantidade": 0})
+                st.rerun()
+        with col2:
+            if st.form_submit_button("- Remover Última Variante") and len(st.session_state.variants) > 1:
+                st.session_state.variants.pop()
+                st.rerun()
+
         submitted = st.form_submit_button("Cadastrar Produto")
         
         if submitted:
-            if validate_product_data(nome, preco_custo, preco_venda, quantidade):
+            if validate_product_data(nome, preco_custo, preco_venda, 0):
                 # Salvar imagem se existir
                 if imagem:
                     with open(f"uploads/{imagem.name}", "wb") as f:
                         f.write(imagem.getbuffer())
                 df = load_data("produtos")
                 
-                novo_produto = {
-                    'codigo': len(df) + 1,
-                    'nome': nome,
-                    'categoria': categoria,
-                    'cor': cor,
-                    'tamanho': tamanho,
-                    'descricao': descricao,
-                    'preco_custo': preco_custo,
-                    'preco_venda': preco_venda,
-                    'quantidade': quantidade,
-                    'imagem_path': imagem.name if imagem else ''
-                }
+                # Criar uma lista de produtos com todas as variantes
+                novos_produtos = []
+                for variant in st.session_state.variants:
+                    novo_produto = {
+                        'codigo': len(df) + len(novos_produtos) + 1,
+                        'nome': nome,
+                        'categoria': categoria,
+                        'cor': variant['cor'],
+                        'tamanho': variant['tamanho'],
+                        'descricao': descricao,
+                        'preco_custo': preco_custo,
+                        'preco_venda': preco_venda,
+                        'quantidade': variant['quantidade'],
+                        'imagem_path': imagem.name if imagem else ''
+                    }
+                    novos_produtos.append(novo_produto)
                 
-                df = pd.concat([df, pd.DataFrame([novo_produto])], ignore_index=True)
+                df = pd.concat([df, pd.DataFrame(novos_produtos)], ignore_index=True)
                 save_data(df, "produtos")
                 st.success("Produto cadastrado com sucesso!")
 
@@ -110,31 +133,37 @@ with tab2:
         # Agrupar produtos por nome e cor
         produtos_agrupados = df.groupby(['nome', 'cor'])
         
+        # Agrupar primeiro por nome do produto
+        produtos_por_nome = df.groupby('nome')
+        
         # Define o número de colunas com base no tipo de visualização
         num_cols = 1 if st.session_state.mobile_view else 3
         cols = st.columns(num_cols)
         col_index = 0
         
-        for (nome_produto, cor), grupo in produtos_agrupados:
+        for nome_produto, grupo_produto in produtos_por_nome:
+            # Agrupar as variantes por cor
+            variantes_por_cor = grupo_produto.groupby('cor')
             with cols[col_index % num_cols]:
                 with st.container():
                     st.subheader(nome_produto)
+                    primeira_variante = grupo_produto.iloc[0]
                     
-                    # Gerenciar carrossel de imagens para produtos com mesmo nome
+                    # Gerenciar carrossel de imagens
                     produto_key = nome_produto
                     if produto_key not in st.session_state.image_index:
                         st.session_state.image_index[produto_key] = 0
                         st.session_state.last_update[produto_key] = time.time()
 
-                    # Atualizar índice da imagem a cada 5 segundos
+                    # Atualizar índice da imagem
                     current_time = time.time()
                     if current_time - st.session_state.last_update[produto_key] >= 5:
-                        todas_imagens = df[df['nome'] == nome_produto]['imagem_path'].unique()
+                        todas_imagens = grupo_produto['imagem_path'].unique()
                         st.session_state.image_index[produto_key] = (st.session_state.image_index[produto_key] + 1) % len(todas_imagens)
                         st.session_state.last_update[produto_key] = current_time
                     
                     # Mostrar imagem atual
-                    imagem_atual = grupo.iloc[0]['imagem_path']
+                    imagem_atual = primeira_variante['imagem_path']
                     if imagem_atual:
                         try:
                             st.image(f"uploads/{imagem_atual}", use_container_width=True)
@@ -144,20 +173,26 @@ with tab2:
                         st.image("https://placehold.co/200x200?text=Sem+Imagem", use_container_width=True)
                     
                     # Informações comuns
-                    st.write(f"**Categoria:** {grupo.iloc[0]['categoria']}")
-                    st.write(f"**Cor:** {cor}")
-                    st.write(f"**Preço:** R$ {grupo.iloc[0]['preco_venda']:.2f}")
+                    st.write(f"**Categoria:** {primeira_variante['categoria']}")
+                    st.write(f"**Preço:** R$ {primeira_variante['preco_venda']:.2f}")
                     
-                    # Variações por tamanho
-                    st.write("**Tamanhos disponíveis:**")
-                    for _, variacao in grupo.iterrows():
-                        st.write(f"- Tamanho {variacao['tamanho']}: {variacao['quantidade']} unidades")
-                        if variacao['quantidade'] <= 5:
-                            st.warning("Estoque Baixo!")
-                        if st.button(f"Excluir", key=f"del_{variacao.name}"):
-                            df = df.drop(variacao.name)
-                            save_data(df, "produtos")
-                            st.rerun()
+                    # Exibir variantes agrupadas por cor
+                    with st.expander("Ver todas as variantes"):
+                        for cor, variantes_cor in variantes_por_cor:
+                            st.write(f"**Cor: {cor}**")
+                            for _, variante in variantes_cor.iterrows():
+                                col1, col2, col3 = st.columns([2,2,1])
+                                with col1:
+                                    st.write(f"Tamanho: {variante['tamanho']}")
+                                with col2:
+                                    st.write(f"Qtd: {variante['quantidade']}")
+                                with col3:
+                                    if variante['quantidade'] <= 5:
+                                        st.warning("Baixo!")
+                                    if st.button("🗑️", key=f"del_{variante.name}"):
+                                        df = df.drop(variante.name)
+                                        save_data(df, "produtos")
+                                        st.rerun()
                     
                     st.divider()
                     
