@@ -114,17 +114,33 @@ with tab1:
         # Sistema de múltiplas variantes
         st.subheader("🎨 Variantes do Produto")
 
-        num_variantes = st.number_input("Número de variantes", min_value=1, value=1, key="num_var", on_change=None)
-        if "num_variantes" not in st.session_state:
-            st.session_state.num_variantes = num_variantes
+        st.subheader("🎨 Variantes do Produto")
+        if 'num_variantes' not in st.session_state:
+            st.session_state.num_variantes = 1
+            
+        col_var1, col_var2 = st.columns([0.9, 0.1])
+        with col_var1:
+            st.write(f"Número de variantes: {st.session_state.num_variantes}")
+        with col_var2:
+            if st.button("➕"):
+                st.session_state.num_variantes += 1
+                st.rerun()
 
         variantes = []
-        if 'previous_num_variantes' not in st.session_state:
-            st.session_state.previous_num_variantes = num_variantes
-
-        if st.session_state.previous_num_variantes != num_variantes:
-            st.session_state.previous_num_variantes = num_variantes
-            st.rerun()
+        for i in range(st.session_state.num_variantes):
+            with st.container():
+                col1, col2, col3, col4 = st.columns([1, 1, 1, 0.2])
+                with col1:
+                    cor = st.text_input(f"Cor", key=f"cor_{i}", placeholder="Digite a cor")
+                with col2:
+                    tamanho = st.text_input(f"Tamanho", key=f"tamanho_{i}", placeholder="Digite o tamanho")
+                with col3:
+                    quantidade = st.number_input(f"Quantidade", min_value=0, key=f"qtd_{i}")
+                with col4:
+                    if st.button("❌", key=f"del_{i}") and st.session_state.num_variantes > 1:
+                        st.session_state.num_variantes -= 1
+                        st.rerun()
+                variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
 
         for i in range(num_variantes):
             st.markdown(f"""

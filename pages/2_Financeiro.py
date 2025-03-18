@@ -55,8 +55,15 @@ with tab1:
             )
             valor = st.number_input("Valor", min_value=0.0, step=0.01, key="valor_input", 
                 help="Digite o valor da transação")
+
+        with col2:
+            categoria = st.selectbox(
+                "Categoria",
+                ["Vendas", "Fornecedores", "Funcionários", "Outros"]
+            )
+            descricao = st.text_input("Descrição")
             
-            submitted = st.form_submit_button("Registrar")
+        submitted = st.form_submit_button("Registrar")
 
     # Calculadora rápida fora do form
     col_calc1, col_calc2 = st.columns(2)
@@ -66,15 +73,6 @@ with tab1:
     with col_calc2:
         if st.button("+ R$ 1000"):
             st.session_state.valor_input += 1000
-
-        with col2:
-            categoria = st.selectbox(
-                "Categoria",
-                ["Vendas", "Fornecedores", "Funcionários", "Outros"]
-            )
-            descricao = st.text_input("Descrição")
-
-        submitted = st.form_submit_button("Registrar")
 
         if submitted:
             if valor > 0:
