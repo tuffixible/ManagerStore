@@ -13,7 +13,7 @@ st.set_page_config(
 # Logo e título
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.title("Sistema de Gestão - Loja Xible", anchor=False)
+    st.title("Sistema de Gestão - Loja Xible")
     try:
         if os.path.exists("logo.png"):
             st.image("logo.png", width=200)

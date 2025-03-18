@@ -27,7 +27,7 @@ def check_password():
         with col2:
             st.markdown('<div class="login-container">', unsafe_allow_html=True)
             with st.form("Autenticação"):
-                st.markdown("### Sistema de Gestão", anchor=False)
+                st.markdown("### Sistema de Gestão")
                 try:
                     if os.path.exists("logo.png"):
                         st.image("logo.png", width=200)
