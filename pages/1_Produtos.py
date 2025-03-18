@@ -33,17 +33,17 @@ with tab1:
             # Layout para desktop: duas colunas
             col1, col2 = st.columns(2)
             with col1:
-            nome = st.text_input("Nome do Produto")
-            categoria = st.selectbox(
-                "Categoria",
-                ["Roupas", "Calçados", "Acessórios"]
-            )
-            cor = st.text_input("Cor")
-            tamanho = st.text_input("Tamanho")
-            preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
-            preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
-        
-        with col2:
+                nome = st.text_input("Nome do Produto")
+                categoria = st.selectbox(
+                    "Categoria",
+                    ["Roupas", "Calçados", "Acessórios"]
+                )
+                cor = st.text_input("Cor")
+                tamanho = st.text_input("Tamanho")
+                preco_custo = st.number_input("Preço de Custo", min_value=0.0, step=0.01)
+                preco_venda = st.number_input("Preço de Venda", min_value=0.0, step=0.01)
+            
+            with col2:
             quantidade = st.number_input("Quantidade em Estoque", min_value=0, step=1)
             descricao = st.text_area("Descrição")
             imagem = st.file_uploader("Imagem do Produto", type=['jpg', 'jpeg', 'png'])
