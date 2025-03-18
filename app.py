@@ -12,9 +12,26 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS para easter eggs
+# CSS para menu mobile e easter eggs
 st.markdown("""
 <style>
+/* Estilo do botão do menu mobile */
+button[kind="header-button"] {
+    background: #FF4B4B !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.5rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
 @keyframes celebrate {
     0% { transform: scale(1); }
     50% { transform: scale(1.2); }
