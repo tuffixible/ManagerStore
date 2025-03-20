@@ -190,12 +190,15 @@ with store_tab:
                 with cols[j]:
                     st.markdown(f"""
                     <div class="product-card">
-                        <img src="uploads/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
+                        <img src="uploads/{produto['imagem_path']}" class="product-image">
                         <div class="product-title">{produto['nome']}</div>
                         <div class="product-description">{produto['descricao'][:100]}...</div>
                         <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
                     </div>
                     """, unsafe_allow_html=True)
+                    # Handle missing images with st.image fallback
+                    if not os.path.exists(f"uploads/{produto['imagem_path']}"):
+                        st.image("https://via.placeholder.com/300", width=200)
                     if st.button("Comprar Agora", key=f"buy_{i}_{j}"):
                         add_to_cart(produto)
 
