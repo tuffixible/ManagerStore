@@ -2,6 +2,7 @@ import streamlit as st
 from auth import check_password
 import os
 import shutil
+import pandas as pd
 
 if not check_password():
     st.stop()
@@ -58,6 +59,7 @@ with st.expander("🔐 Alterar Senha"):
             else:
                 st.error("❌ As senhas não conferem!")
 st.markdown('</div>', unsafe_allow_html=True)
+
 # Configurações de Notificações WhatsApp
 st.markdown('<div class="config-card">', unsafe_allow_html=True)
 st.subheader("📱 Configurações de WhatsApp")
@@ -67,6 +69,47 @@ enable_notifications = st.checkbox("Ativar notificações de atualizações")
 if st.button("Salvar Configurações de WhatsApp"):
     # Aqui você pode implementar a lógica para salvar as configurações
     st.success("✅ Configurações de WhatsApp salvas com sucesso!")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Gerenciamento de Permissões
+st.markdown('<div class="config-card">', unsafe_allow_html=True)
+st.subheader("👥 Gerenciamento de Permissões")
+
+if st.session_state.get('user_role') == 'administrador':
+    usuarios_df = pd.read_csv("data/usuarios.csv")
+
+    # Definir permissões disponíveis
+    permissoes = {
+        'produtos_view': 'Visualizar Produtos',
+        'produtos_edit': 'Editar Produtos',
+        'financeiro_view': 'Visualizar Financeiro',
+        'financeiro_edit': 'Editar Financeiro',
+        'relatorios_view': 'Visualizar Relatórios',
+        'config_view': 'Acessar Configurações',
+        'config_edit': 'Editar Configurações'
+    }
+
+    # Criar interface de edição
+    edited_df = st.data_editor(
+        usuarios_df,
+        column_config={
+            "usuario": "Usuário",
+            "perfil": st.column_config.SelectboxColumn(
+                "Perfil",
+                options=["administrador", "gerente", "vendedor", "cliente"],
+                required=True
+            ),
+            "email": "Email"
+        },
+        hide_index=True,
+        num_rows="dynamic"
+    )
+
+    if st.button("Salvar Alterações"):
+        edited_df.to_csv("data/usuarios.csv", index=False)
+        st.success("✅ Permissões atualizadas com sucesso!")
+else:
+    st.warning("Apenas administradores podem gerenciar permissões.")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Easter Egg Settings
