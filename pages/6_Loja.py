@@ -134,8 +134,8 @@ def send_whatsapp_order(items, total):
     webbrowser.open(whatsapp_url)
     return True
 
-# Cart tab
-cart_tab, store_tab = st.tabs(["🛒 Carrinho", "🏪 Loja"])
+# Store tabs - reordered
+store_tab, cart_tab = st.tabs(["🏪 Loja", "🛒 Carrinho"])
 
 with cart_tab:
     if not st.session_state.cart:
@@ -190,7 +190,7 @@ with store_tab:
                 with cols[j]:
                     st.markdown(f"""
                     <div class="product-card">
-                        <img src="data/products/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
+                        <img src="uploads/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
                         <div class="product-title">{produto['nome']}</div>
                         <div class="product-description">{produto['descricao'][:100]}...</div>
                         <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
