@@ -99,6 +99,18 @@ for idx, produto in produtos_filtrados.iterrows():
             <h3>{produto['nome']}</h3>
             <p>{produto.get('descricao', '')}</p>
             <div class="price">R$ {produto['preco_venda']:.2f}</div>
-            <button class="buy-button">Comprar</button>
+            <button class="buy-button" onclick="addToCart('{produto['codigo']}', '{produto['nome']}', {produto['preco_venda']}, '{produto['tamanho']}', '{produto['cor']}')">Comprar</button>
         </div>
         """, unsafe_allow_html=True)
+
+# JavaScript for cart functionality
+st.markdown("""
+<script>
+function addToCart(codigo, nome, preco, tamanho, cor) {
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    cart.push({codigo, nome, preco, tamanho, cor, quantidade: 1});
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.location.href = window.location.pathname + '/../7_Carrinho';
+}
+</script>
+""", unsafe_allow_html=True)
