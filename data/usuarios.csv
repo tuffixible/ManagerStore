@@ -1,5 +1,4 @@
-
 usuario,senha,perfil,email
-admin,admin123,administrador,admin@loja.com
+admin,admin,administrador,admin@loja.com
 vendedor,loja2024,vendedor,vendedor@loja.com
 gerente,ger123,gerente,gerente@loja.com
