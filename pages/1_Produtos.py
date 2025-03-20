@@ -112,7 +112,7 @@ with tab1:
 
         st.markdown("---")
         st.subheader("🎨 Variantes do Produto")
-        
+
         if 'variantes' not in st.session_state:
             st.session_state.variantes = [{"cor": "", "tamanho": "", "quantidade": 0}]
 
@@ -136,14 +136,14 @@ with tab1:
                     quantidade = st.number_input("Quantidade", value=variante["quantidade"], min_value=0, key=f"form_qtd_{i}")
                 st.markdown("</div>", unsafe_allow_html=True)
                 variantes.append({"cor": cor, "tamanho": tamanho, "quantidade": quantidade})
-        
+
         submit = st.form_submit_button("📥 Cadastrar Produto")
-        
+
     # Add variant button outside the form
     if st.button("➕ Adicionar Variante", key="add_variant_btn"):
         st.session_state.variantes.append({"cor": "", "tamanho": "", "quantidade": 0})
         st.rerun()
-        
+
     if submit:
             if validate_product_data(nome, preco_custo, preco_venda, 0):
                 df = load_data("produtos")
@@ -250,9 +250,9 @@ with tab2:
                         with cols[idx]:
                             try:
                                 try:
-                        st.image(f"uploads/{img}", width=120)
-                    except Exception:
-                        st.image("https://via.placeholder.com/120x120?text=Sem+Imagem", width=120)
+                                    st.image(f"uploads/{img}", width=120)
+                                except Exception:
+                                    st.image("https://via.placeholder.com/120x120?text=Sem+Imagem", width=120)
                             except:
                                 st.image("https://via.placeholder.com/120x120?text=Sem+Imagem")
 
@@ -328,7 +328,7 @@ with tab3:
                     save_data(df, "produtos")
                     st.success("✅ Produtos excluídos com sucesso!")
                     st.rerun()
-        
+
         with col2:
             if st.button("✏️ Editar Selecionados") and selected:
                 st.session_state.editing = True
@@ -348,7 +348,7 @@ with tab3:
                 hide_index=True,
                 key="edit_table"
             )
-            
+
             if st.button("💾 Salvar Alterações"):
                 # Atualizar o DataFrame original com as alterações
                 df.update(edited_df)
