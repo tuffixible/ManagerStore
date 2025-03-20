@@ -1,10 +1,17 @@
 
 import streamlit as st
 import pandas as pd
-from utils import load_data
+from utils import load_data, save_data
 import base64
+import json
+import webbrowser
+import urllib.parse
 
 st.set_page_config(layout="wide")
+
+# Initialize session state for cart
+if 'cart' not in st.session_state:
+    st.session_state.cart = []
 
 # Custom CSS for the store
 st.markdown("""
@@ -27,10 +34,12 @@ st.markdown("""
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
@@ -54,12 +63,14 @@ st.markdown("""
     font-size: 1.2rem;
     color: #ff4b4b;
     font-weight: 700;
+    margin: 0.5rem 0;
 }
 
 .product-description {
     font-size: 0.9rem;
     color: #666;
     margin-bottom: 1rem;
+    flex-grow: 1;
 }
 
 .buy-button {
@@ -71,7 +82,8 @@ st.markdown("""
     cursor: pointer;
     transition: background-color 0.3s ease;
     text-decoration: none;
-    display: block;
+    border: none;
+    width: 100%;
     margin-top: auto;
 }
 
@@ -79,75 +91,113 @@ st.markdown("""
     background-color: #ff3333;
 }
 
-.category-filter {
-    padding: 0.5rem 1rem;
-    background: white;
-    border-radius: 20px;
-    margin: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid #ddd;
-}
-
-.category-filter:hover {
-    background: #f0f0f0;
-}
-
-.category-filter.active {
-    background: #ff4b4b;
+.cart-badge {
+    background-color: #ff4b4b;
     color: white;
-    border-color: #ff4b4b;
+    border-radius: 50%;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
 }
 
-div[data-testid="stHorizontalBlock"] {
-    gap: 1rem;
-    padding: 0.5rem;
+.cart-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Header
-st.markdown('<div class="store-header"><h1>🛍️ Loja Xible</h1><p>As melhores ofertas em calçados!</p></div>', unsafe_allow_html=True)
+# Load WhatsApp configuration
+try:
+    whatsapp_config = pd.read_csv("data/whatsapp_config.csv").iloc[0]
+except:
+    whatsapp_config = {'numero': '', 'mensagem_padrao': ''}
 
-# Load products
-produtos_df = load_data("produtos")
+# Function to add item to cart
+def add_to_cart(product):
+    st.session_state.cart.append(product)
+    st.success(f"{product['nome']} adicionado ao carrinho!")
 
-# Filters
-col1, col2 = st.columns([2,1])
-with col1:
-    search = st.text_input("🔍 Buscar produtos", "")
+# Function to send WhatsApp message
+def send_whatsapp_order(items, total):
+    if not whatsapp_config['numero']:
+        st.error("Número do WhatsApp não configurado. Configure em Configurações.")
+        return False
     
-with col2:
-    categorias = produtos_df['categoria'].unique()
-    categoria_selecionada = st.selectbox("📑 Filtrar por categoria", ['Todas'] + list(categorias))
+    items_text = "\n".join([f"- {item['nome']} (R$ {item['preco_venda']:.2f})" for item in items])
+    message = f"Olá! Novo pedido:\n\n{items_text}\n\nTotal: R$ {total:.2f}"
+    
+    whatsapp_url = f"https://wa.me/{whatsapp_config['numero']}?text={urllib.parse.quote(message)}"
+    webbrowser.open(whatsapp_url)
+    return True
 
-# Filter products
-if search:
-    produtos_df = produtos_df[produtos_df['nome'].str.contains(search, case=False)]
-if categoria_selecionada != 'Todas':
-    produtos_df = produtos_df[produtos_df['categoria'] == categoria_selecionada]
+# Cart tab
+cart_tab, store_tab = st.tabs(["🛒 Carrinho", "🏪 Loja"])
 
-# Display products in grid
-for i in range(0, len(produtos_df), 3):
-    cols = st.columns(3)
-    for j in range(3):
-        if i + j < len(produtos_df):
-            produto = produtos_df.iloc[i + j]
-            with cols[j]:
+with cart_tab:
+    if not st.session_state.cart:
+        st.info("Seu carrinho está vazio")
+    else:
+        total = sum(item['preco_venda'] for item in st.session_state.cart)
+        st.header(f"Total: R$ {total:.2f}")
+        
+        for item in st.session_state.cart:
+            with st.container():
                 st.markdown(f"""
-                <div class="product-card">
-                    <img src="uploads/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
-                    <div class="product-title">{produto['nome']}</div>
-                    <div class="product-description">{produto['descricao'][:100]}...</div>
-                    <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="category-filter">{produto['categoria']}</span>
-                        <span class="category-filter">{produto['cor']}</span>
-                        <span class="category-filter">Tam. {produto['tamanho']}</span>
-                    </div>
-                    <a href="#" class="buy-button">Comprar Agora</a>
+                <div class="cart-item">
+                    <h3>{item['nome']}</h3>
+                    <p>R$ {item['preco_venda']:.2f}</p>
                 </div>
                 """, unsafe_allow_html=True)
+        
+        if st.button("Finalizar Compra"):
+            if send_whatsapp_order(st.session_state.cart, total):
+                st.session_state.cart = []
+                st.success("Pedido enviado com sucesso!")
+                st.rerun()
+
+with store_tab:
+    # Header
+    st.markdown('<div class="store-header"><h1>🛍️ Loja Xible</h1><p>As melhores ofertas!</p></div>', unsafe_allow_html=True)
+
+    # Load products
+    produtos_df = load_data("produtos")
+
+    # Filters
+    col1, col2 = st.columns([2,1])
+    with col1:
+        search = st.text_input("🔍 Buscar produtos", "")
+        
+    with col2:
+        categorias = produtos_df['categoria'].unique()
+        categoria_selecionada = st.selectbox("📑 Filtrar por categoria", ['Todas'] + list(categorias))
+
+    # Filter products
+    if search:
+        produtos_df = produtos_df[produtos_df['nome'].str.contains(search, case=False)]
+    if categoria_selecionada != 'Todas':
+        produtos_df = produtos_df[produtos_df['categoria'] == categoria_selecionada]
+
+    # Display products in grid
+    for i in range(0, len(produtos_df), 3):
+        cols = st.columns(3)
+        for j in range(3):
+            if i + j < len(produtos_df):
+                produto = produtos_df.iloc[i + j].to_dict()
+                with cols[j]:
+                    st.markdown(f"""
+                    <div class="product-card">
+                        <img src="data/products/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
+                        <div class="product-title">{produto['nome']}</div>
+                        <div class="product-description">{produto['descricao'][:100]}...</div>
+                        <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    if st.button("Comprar Agora", key=f"buy_{i}_{j}"):
+                        add_to_cart(produto)
 
 # Footer
 st.markdown("""
