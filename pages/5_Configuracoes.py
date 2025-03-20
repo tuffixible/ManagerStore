@@ -63,11 +63,47 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Configurações de Notificações WhatsApp
 st.markdown('<div class="config-card">', unsafe_allow_html=True)
 st.subheader("📱 Configurações de WhatsApp")
-whatsapp_number = st.text_input("Número do WhatsApp (com DDD)", placeholder="Ex: 11999999999")
-enable_notifications = st.checkbox("Ativar notificações de atualizações")
 
-if st.button("Salvar Configurações de WhatsApp"):
-    # Aqui você pode implementar a lógica para salvar as configurações
+# Load existing WhatsApp settings
+if 'whatsapp_config' not in st.session_state:
+    try:
+        whatsapp_df = pd.read_csv("data/whatsapp_config.csv")
+        st.session_state.whatsapp_config = whatsapp_df.to_dict('records')[0]
+    except:
+        st.session_state.whatsapp_config = {
+            'numero': '',
+            'mensagem_padrao': 'Olá! Gostaria de fazer um pedido:\n\n{itens}\n\nTotal: R$ {total}',
+            'ativar_notificacoes': False
+        }
+
+col1, col2 = st.columns(2)
+with col1:
+    numero = st.text_input(
+        "Número do WhatsApp (com DDD)", 
+        value=st.session_state.whatsapp_config['numero'],
+        placeholder="Ex: 11999999999"
+    )
+
+with col2:
+    enable_notifications = st.checkbox(
+        "Ativar notificações automáticas",
+        value=st.session_state.whatsapp_config['ativar_notificacoes']
+    )
+
+mensagem_padrao = st.text_area(
+    "Mensagem padrão do pedido",
+    value=st.session_state.whatsapp_config['mensagem_padrao'],
+    help="Use {itens} para lista de produtos e {total} para valor total"
+)
+
+if st.button("💾 Salvar Configurações de WhatsApp"):
+    config = {
+        'numero': numero,
+        'mensagem_padrao': mensagem_padrao,
+        'ativar_notificacoes': enable_notifications
+    }
+    pd.DataFrame([config]).to_csv("data/whatsapp_config.csv", index=False)
+    st.session_state.whatsapp_config = config
     st.success("✅ Configurações de WhatsApp salvas com sucesso!")
 st.markdown('</div>', unsafe_allow_html=True)
 

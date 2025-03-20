@@ -285,14 +285,14 @@ with tab3:
     df = load_data("produtos")
     if not df.empty:
         # Calcular valores totais
-        total_produtos = len(df)
+        total_estoque = df['quantidade'].sum()
         produtos_baixo_estoque = len(df[df['quantidade'] <= 5])
         valor_total_estoque = (df['preco_venda'] * df['quantidade']).sum()
         custo_total_estoque = (df['preco_custo'] * df['quantidade']).sum()
         margem_total = valor_total_estoque - custo_total_estoque
 
         col1, col2, col3, col4, col5 = st.columns(5)
-        col1.metric("📦 Total de Produtos", total_produtos)
+        col1.metric("📦 Total em Estoque", total_estoque)
         col2.metric("⚠️ Produtos em Baixa", produtos_baixo_estoque)
         col3.metric("💰 Valor Total Venda", f"R$ {valor_total_estoque:.2f}")
         col4.metric("💵 Custo Total", f"R$ {custo_total_estoque:.2f}")
