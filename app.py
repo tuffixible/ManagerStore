@@ -110,6 +110,24 @@ os.makedirs("uploads", exist_ok=True)
 if not check_password():
     st.stop()
 
+# Controle de acesso baseado no perfil
+if 'user_role' not in st.session_state:
+    st.error("Erro de sessão. Por favor, faça login novamente.")
+    st.stop()
+
+user_role = st.session_state.get('user_role', 'vendedor')
+if user_role not in ['administrador', 'gerente', 'vendedor']:
+    st.error("Perfil de usuário inválido")
+    st.stop()
+
+# Customização baseada no perfil
+if user_role == 'administrador':
+    st.sidebar.success("🔑 Acesso Administrativo")
+elif user_role == 'gerente':
+    st.sidebar.info("👔 Acesso Gerencial")
+else:
+    st.sidebar.info("👤 Acesso Vendedor")
+
 # Cards informativos com efeitos visuais
 st.markdown("""
 <style>

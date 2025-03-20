@@ -2,11 +2,12 @@
 import streamlit as st
 import pandas as pd
 import os
+from datetime import datetime
 
 def check_password():
     """Retorna `True` se o usuário tiver a senha correta."""
     def login_form():
-        """Form de login"""
+        """Form de login moderno"""
         st.markdown("""
         <style>
         .stApp {
@@ -16,81 +17,82 @@ def check_password():
             max-width: 500px;
             margin: 0 auto;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .big-logo {
             width: 300px;
             margin: 0 auto 20px auto;
             display: block;
         }
-        #background-video {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -1;
+        .input-container {
+            margin: 15px 0;
+            position: relative;
+        }
+        .input-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .input-container input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        .forgot-password {
+            text-align: right;
+            font-size: 0.9em;
+            color: #666;
+            margin: 10px 0;
         }
         </style>
         """, unsafe_allow_html=True)
         
-        # Carrega o vídeo de fundo se existir
-        if os.path.exists("background.mp4"):
-            st.markdown("""
-            <video autoplay muted loop id="background-video">
-                <source src="background.mp4" type="video/mp4">
-            </video>
-            """, unsafe_allow_html=True)
-        
         col1, col2, col3 = st.columns([1,2,1])
         with col2:
-            st.markdown("""
-            <style>
-            .login-container {
-                background: linear-gradient(145deg, #ffffff, #f0f0f0);
-                box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-                border-radius: 15px;
-                padding: 30px;
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            .stButton > button {
-                background: linear-gradient(145deg, #007bff, #0056b3);
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                transition: all 0.3s ease;
-            }
-            .stButton > button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
             st.markdown('<div class="login-container">', unsafe_allow_html=True)
             with st.form("Autenticação"):
-                st.markdown("### Sistema de Gestão", help="Bem-vindo ao sistema")
+                st.markdown("### 🏪 Sistema de Gestão", help="Bem-vindo ao sistema")
+                
+                try:
+                    if os.path.exists("logo.png"):
+                        st.image("logo.png", width=200)
+                except:
+                    pass
+                
                 usuario = st.text_input("👤 Usuário", placeholder="Digite seu usuário")
                 senha = st.text_input("🔒 Senha", type="password", placeholder="Digite sua senha")
+                
+                if st.checkbox("Esqueceu a senha?"):
+                    st.info("Entre em contato com o administrador do sistema para redefinir sua senha.")
+                
                 submitted = st.form_submit_button("Entrar", use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
+                
+                if submitted:
+                    # Registrar tentativa de login
+                    with open("data/login_attempts.log", "a") as f:
+                        f.write(f"{datetime.now()},{usuario},{'success' if check_credentials(usuario, senha) else 'failed'}\n")
+                
                 return usuario, senha, submitted
 
-    if st.session_state.get("show_config", False):
-        st.markdown("### ⚙️ Configurações")
-        uploaded_file = st.file_uploader("Upload da Logo", type=['png', 'jpg', 'jpeg'])
-        if uploaded_file is not None:
-            with open("logo.png", "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success("Logo atualizada com sucesso!")
-        if st.button("Voltar"):
-            st.session_state.show_config = False
-            st.rerun()
+    def check_credentials(usuario, senha):
+        """Verifica credenciais e retorna o perfil do usuário"""
+        usuarios_df = pd.read_csv("data/usuarios.csv")
+        if usuario in usuarios_df['usuario'].values:
+            user_data = usuarios_df[usuarios_df['usuario'] == usuario]
+            if user_data['senha'].iloc[0] == senha:
+                st.session_state['user_role'] = user_data['perfil'].iloc[0]
+                st.session_state['user_name'] = usuario
+                return True
         return False
 
     if st.session_state.get("authenticated"):
@@ -98,13 +100,11 @@ def check_password():
 
     usuario, senha, submitted = login_form()
 
-    if submitted:
-        usuarios_df = pd.read_csv("data/usuarios.csv")
-        if usuario in usuarios_df['usuario'].values:
-            user_data = usuarios_df[usuarios_df['usuario'] == usuario]
-            if user_data['senha'].iloc[0] == senha:
-                st.session_state["authenticated"] = True
-                return True
+    if submitted and check_credentials(usuario, senha):
+        st.session_state["authenticated"] = True
+        st.success(f"👋 Bem-vindo, {usuario}!")
+        st.rerun()
+    elif submitted:
         st.error("❌ Usuário ou senha incorretos")
         return False
 
