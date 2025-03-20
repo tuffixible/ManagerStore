@@ -1,0 +1,13 @@
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+Minified React error #231; visit https://reactjs.org/docs/error-decoder.html?invariant=231&args[]=onClick&args[]=string for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+at xn (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:10131)
+at https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:36329
+at is (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:48:40410)
+at En (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:9535)
+at tl (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:35155)
+at oa (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:18525)
+at bi (https://bc1fa5ff-65b4-4e9b-9c01-b3f3804e062b-00-smm6icz3dklr.kirk.replit.dev/static/js/index.DmrHunjf.js:45:18281)
