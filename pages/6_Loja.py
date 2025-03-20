@@ -98,7 +98,7 @@ for idx, produto in produtos_filtrados.iterrows():
             <span class="category-tag">{produto['categoria']}</span>
             <h3>{produto['nome']}</h3>
             <p>{produto.get('descricao', '')}</p>
-            <div class="price">R$ {produto['preco']:.2f}</div>
+            <div class="price">R$ {produto['preco_venda']:.2f}</div>
             <button class="buy-button">Comprar</button>
         </div>
         """, unsafe_allow_html=True)
