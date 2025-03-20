@@ -206,7 +206,6 @@ st.sidebar.markdown("""
 <div class="sidebar-menu">📊 <b>Relatórios</b>: Análises e gráficos</div>
 <div class="sidebar-menu">🤖 <b>Assistente IA</b>: Sugestões</div>
 <div class="sidebar-menu">🛍️ <b>Loja</b>: Vitrine de produtos</div>
-<div class="sidebar-menu">⚙️ <b>Configurações</b>: Personalização</div>
 """, unsafe_allow_html=True)
 
 st.write("""

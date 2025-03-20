@@ -1,2 +1,2 @@
 
-# Functionality moved to store page
+# Page removed - Cart functionality integrated into store
