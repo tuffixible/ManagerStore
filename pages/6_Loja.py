@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from auth import check_password
@@ -161,7 +160,7 @@ with col2:
 if st.session_state.show_cart:
     with st.container():
         st.markdown("## 🛒 Seu Carrinho")
-        
+
         if not st.session_state.cart:
             st.info("Seu carrinho está vazio")
         else:
@@ -191,29 +190,29 @@ if st.session_state.show_cart:
                     if st.button("🗑️", key=f"remove_{idx}"):
                         st.session_state.cart.pop(idx)
                         st.rerun()
-                
+
                 total += item['preco'] * item['quantidade']
                 st.markdown("---")
-            
+
             st.markdown(f"### Total: R$ {total:.2f}")
-            
+
             if st.button("Finalizar Compra", type="primary"):
                 itens = "\n".join([
                     f"- {item['nome']} ({item['cor']}, {item['tamanho']}) x{item['quantidade']} = R$ {item['preco'] * item['quantidade']:.2f}"
                     for item in st.session_state.cart
                 ])
-                
+
                 mensagem = whatsapp_config['mensagem_padrao'].format(
                     itens=itens,
                     total=total
                 )
-                
+
                 mensagem_encoded = mensagem.replace('\n', '%0A').replace(' ', '%20')
                 whatsapp_link = f"https://wa.me/+55{whatsapp_config['numero']}?text={mensagem_encoded}"
                 st.markdown(f'<a href="{whatsapp_link}" target="_blank" class="whatsapp-button">Enviar pedido por WhatsApp</a>', unsafe_allow_html=True)
                 st.session_state.cart = []
                 st.rerun()
-            
+
             if st.button("Continuar Comprando"):
                 st.session_state.show_cart = False
                 st.rerun()
@@ -223,30 +222,33 @@ if not st.session_state.show_cart:
     cols = st.columns(3)
     for idx, produto in produtos_filtrados.iterrows():
         with cols[idx % 3]:
-            st.markdown(f"""
-            <div class="product-card">
-                <img src="uploads/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
-                <span class="category-tag">{produto['categoria']}</span>
-                <h3>{produto['nome']}</h3>
-                <div class="description-preview">{produto.get('descricao', '')}</div>
-                <div class="price">R$ {produto['preco_venda']:.2f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button("Ver Detalhes", key=f"details_{idx}"):
-                st.session_state.selected_product = produto
-                
-            if st.button("Comprar", key=f"buy_{idx}", type="primary"):
-                item = {
-                    'codigo': produto['codigo'],
-                    'nome': produto['nome'],
-                    'preco': produto['preco_venda'],
-                    'tamanho': produto['tamanho'],
-                    'cor': produto['cor'],
-                    'quantidade': 1
-                }
-                st.session_state.cart.append(item)
-                st.success("✅ Produto adicionado ao carrinho!")
+            col1, col2 = st.columns([3,1])
+            with col1:
+                st.markdown(f"""
+                <div class="product-card">
+                    <img src="uploads/{produto['imagem_path']}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
+                    <span class="category-tag">{produto['categoria']}</span>
+                    <h3>{produto['nome']}</h3>
+                    <div class="description-preview">{produto.get('descricao', '')[:100]}...</div>
+                    <div class="price">R$ {produto['preco_venda']:.2f}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with col2:
+                if st.button("Ver Detalhes", key=f"details_{produto['codigo']}"):
+                    st.session_state.selected_product = produto
+
+                if st.button("🛒 Comprar", key=f"buy_{produto['codigo']}", type="primary"):
+                    item = {
+                        'codigo': produto['codigo'],
+                        'nome': produto['nome'],
+                        'preco': produto['preco_venda'],
+                        'tamanho': produto['tamanho'],
+                        'cor': produto['cor'],
+                        'quantidade': 1
+                    }
+                    st.session_state.cart.append(item)
+                    st.success("✅ Produto adicionado ao carrinho!")
+
 
 # Modal de detalhes do produto
 if st.session_state.selected_product is not None:
@@ -261,7 +263,7 @@ if st.session_state.selected_product is not None:
             st.markdown(f"**Preço:** R$ {st.session_state.selected_product['preco_venda']:.2f}")
             st.markdown(f"**Cor:** {st.session_state.selected_product['cor']}")
             st.markdown(f"**Tamanho:** {st.session_state.selected_product['tamanho']}")
-            
+
             if st.button("Fechar"):
                 st.session_state.selected_product = None
                 st.rerun()

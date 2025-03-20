@@ -249,7 +249,10 @@ with tab2:
                     for idx, img in enumerate(imagens[:3]):
                         with cols[idx]:
                             try:
-                                st.image(f"uploads/{img}", width=120)
+                                try:
+                        st.image(f"uploads/{img}", width=120)
+                    except Exception:
+                        st.image("https://via.placeholder.com/120x120?text=Sem+Imagem", width=120)
                             except:
                                 st.image("https://via.placeholder.com/120x120?text=Sem+Imagem")
 
