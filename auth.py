@@ -91,16 +91,16 @@ def check_password():
             user_data = usuarios_df[usuarios_df['usuario'] == usuario]
             if user_data['senha'].iloc[0] == senha:
                 perfil = user_data['perfil'].iloc[0]
-st.session_state['user_role'] = perfil
-st.session_state['permissions'] = {
-    'produtos_view': perfil in ['administrador', 'gerente', 'vendedor'],
-    'produtos_edit': perfil in ['administrador', 'gerente'],
-    'financeiro_view': perfil in ['administrador', 'gerente'],
-    'financeiro_edit': perfil in ['administrador'],
-    'relatorios_view': perfil in ['administrador', 'gerente'],
-    'config_view': perfil in ['administrador'],
-    'config_edit': perfil in ['administrador']
-}
+                st.session_state['user_role'] = perfil
+                st.session_state['permissions'] = {
+                    'produtos_view': perfil in ['administrador', 'gerente', 'vendedor'],
+                    'produtos_edit': perfil in ['administrador', 'gerente'],
+                    'financeiro_view': perfil in ['administrador', 'gerente'],
+                    'financeiro_edit': perfil in ['administrador'],
+                    'relatorios_view': perfil in ['administrador', 'gerente'],
+                    'config_view': perfil in ['administrador'],
+                    'config_edit': perfil in ['administrador']
+                }
                 st.session_state['user_name'] = usuario
                 return True
         return False
