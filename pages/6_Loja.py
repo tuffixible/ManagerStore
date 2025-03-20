@@ -1,157 +1,109 @@
-
 import streamlit as st
 import pandas as pd
 from auth import check_password
 
-# Configuração da página
 st.set_page_config(
     page_title="Loja - Xible",
     page_icon="🛍️",
     layout="wide"
 )
 
-# Estilo da loja
+# Store styles
 st.markdown("""
 <style>
+.store-header { 
+    background: #f8f9fa;
+    padding: 2rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.category-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
 }
 .product-card {
     background: white;
-    border-radius: 10px;
-    padding: 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
     overflow: hidden;
+    transition: transform 0.3s ease;
 }
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-}
-.product-image-container {
-    position: relative;
-    padding-top: 100%;
-    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 .product-image {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
+    height: 300px;
     object-fit: cover;
-    transition: transform 0.3s ease;
-}
-.product-card:hover .product-image {
-    transform: scale(1.1);
 }
 .product-info {
-    padding: 15px;
-    text-align: center;
+    padding: 1rem;
 }
-.product-name {
-    font-size: 1.1em;
+.product-title {
+    font-size: 1.1rem;
     font-weight: 600;
-    margin: 10px 0;
-    color: #333;
+    margin-bottom: 0.5rem;
 }
 .product-price {
-    font-size: 1.2em;
-    color: #2ecc71;
+    color: #28a745;
+    font-size: 1.2rem;
     font-weight: bold;
-    margin: 10px 0;
 }
-.product-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 15px;
+.product-description {
+    color: #6c757d;
+    margin: 0.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
-.btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-.btn-primary {
-    background-color: #2ecc71;
+.btn-buy {
+    width: 100%;
+    background: #28a745;
     color: white;
-}
-.btn-secondary {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ddd;
-}
-.btn:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
 }
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.8);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.modal-content {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: white;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 800px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-}
-.cart-summary {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-top: 20px;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 90%;
+    width: 500px;
 }
 .cart-item {
     display: flex;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-}
-.cart-item-info {
-    flex-grow: 1;
-    padding: 0 15px;
-}
-.cart-item-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
 }
 .cart-total {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     font-weight: bold;
     text-align: right;
-    padding: 20px;
-}
-.category-filter {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 1rem;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Inicializar estados da sessão
+# Initialize session state
 if 'cart' not in st.session_state:
     st.session_state.cart = []
 if 'show_cart' not in st.session_state:
@@ -159,144 +111,112 @@ if 'show_cart' not in st.session_state:
 if 'show_product_details' not in st.session_state:
     st.session_state.show_product_details = None
 
-# Carregar produtos
-produtos_df = pd.read_csv("data/produtos.csv")
+# Load products
+try:
+    produtos_df = pd.read_csv("data/produtos.csv")
+except Exception as e:
+    st.error("Erro ao carregar produtos")
+    st.stop()
 
-# Sidebar com filtros
-with st.sidebar:
-    st.markdown("### 🔍 Filtros")
-    
-    # Filtro de categoria
-    categorias = ['Todas'] + sorted(produtos_df['categoria'].unique().tolist())
-    categoria_selecionada = st.selectbox('Categoria', categorias)
-    
-    # Filtro de preço
-    preco_min, preco_max = st.slider(
-        'Faixa de Preço',
-        float(produtos_df['preco_venda'].min()),
-        float(produtos_df['preco_venda'].max()),
-        (float(produtos_df['preco_venda'].min()), float(produtos_df['preco_venda'].max()))
-    )
+# Store header
+st.markdown('<div class="store-header">', unsafe_allow_html=True)
+st.title("🛍️ Loja Xible")
+st.markdown("Descubra nossa coleção exclusiva")
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Aplicar filtros
-produtos_filtrados = produtos_df.copy()
-if categoria_selecionada != 'Todas':
-    produtos_filtrados = produtos_filtrados[produtos_filtrados['categoria'] == categoria_selecionada]
-produtos_filtrados = produtos_filtrados[
-    (produtos_filtrados['preco_venda'] >= preco_min) &
-    (produtos_filtrados['preco_venda'] <= preco_max)
-]
-
-# Header da loja
-col1, col2 = st.columns([4,1])
-with col1:
-    st.title("🛍️ Loja Xible")
+# Category filter
+categorias = ['Todas'] + sorted(produtos_df['categoria'].unique().tolist())
+col1, col2, col3 = st.columns([1,2,1])
 with col2:
-    if st.button(f"🛒 Carrinho ({len(st.session_state.cart)})", use_container_width=True):
-        st.session_state.show_cart = True
+    categoria = st.selectbox('Categoria', categorias, key='categoria_filter')
 
-# Mostrar carrinho
+# Products grid
+produtos_filtrados = produtos_df if categoria == 'Todas' else produtos_df[produtos_df['categoria'] == categoria]
+
+st.markdown('<div class="product-grid">', unsafe_allow_html=True)
+for idx, produto in produtos_filtrados.iterrows():
+    st.markdown(f"""
+    <div class="product-card">
+        <img src="uploads/{produto['imagem_path']}" class="product-image" 
+             onerror="this.src='https://via.placeholder.com/300x300?text=Sem+Imagem'">
+        <div class="product-info">
+            <div class="product-title">{produto['nome']}</div>
+            <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
+            <div class="product-description">{produto.get('descricao', 'Sem descrição')}</div>
+            <button class="btn-buy" key=f"buy_{idx}">Comprar</button>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("Ver Detalhes", key=f"details_{idx}"):
+        st.session_state.show_product_details = produto
+    if st.button("Comprar", key=f"buy_{idx}", type="primary"):
+        st.session_state.cart.append({
+            'codigo': produto['codigo'],
+            'nome': produto['nome'],
+            'preco': produto['preco_venda'],
+            'tamanho': produto['tamanho'],
+            'cor': produto['cor'],
+            'quantidade': 1
+        })
+        st.toast("✅ Produto adicionado ao carrinho!")
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Cart button
+if st.sidebar.button(f"🛒 Carrinho ({len(st.session_state.cart)})", use_container_width=True):
+    st.session_state.show_cart = True
+
+# Cart modal
 if st.session_state.show_cart:
-    st.markdown("## 🛒 Seu Carrinho")
-    
-    if not st.session_state.cart:
-        st.info("Seu carrinho está vazio")
-        if st.button("Continuar Comprando"):
-            st.session_state.show_cart = False
-            st.rerun()
-    else:
-        total = 0
-        for idx, item in enumerate(st.session_state.cart):
-            with st.container():
+    with st.container():
+        st.subheader("🛒 Seu Carrinho")
+
+        if not st.session_state.cart:
+            st.info("Seu carrinho está vazio")
+        else:
+            total = 0
+            for idx, item in enumerate(st.session_state.cart):
                 col1, col2, col3 = st.columns([3,2,1])
                 with col1:
-                    st.markdown(f"**{item['nome']}**")
-                    st.text(f"Tamanho: {item['tamanho']} | Cor: {item['cor']}")
+                    st.write(f"**{item['nome']}**")
                 with col2:
-                    qty_col1, qty_col2, qty_col3 = st.columns([1,1,1])
-                    with qty_col1:
-                        if st.button("-", key=f"minus_{idx}"):
-                            if item['quantidade'] > 1:
-                                st.session_state.cart[idx]['quantidade'] -= 1
-                                st.rerun()
-                    with qty_col2:
-                        st.write(f"{item['quantidade']}")
-                    with qty_col3:
-                        if st.button("+", key=f"plus_{idx}"):
-                            st.session_state.cart[idx]['quantidade'] += 1
-                            st.rerun()
+                    item['quantidade'] = st.number_input("Quantidade", key=f"qty_{idx}", min_value=1, value=item['quantidade'])
                 with col3:
-                    st.write(f"R$ {item['preco'] * item['quantidade']:.2f}")
                     if st.button("🗑️", key=f"remove_{idx}"):
                         st.session_state.cart.pop(idx)
                         st.rerun()
-                
                 total += item['preco'] * item['quantidade']
-        
-        st.markdown(f"### Total: R$ {total:.2f}")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Continuar Comprando", use_container_width=True):
-                st.session_state.show_cart = False
-                st.rerun()
-        with col2:
-            if st.button("Finalizar Compra", type="primary", use_container_width=True):
-                # Preparar mensagem para WhatsApp
-                itens = "\n".join([
-                    f"• {item['nome']} ({item['cor']}, {item['tamanho']}) x{item['quantidade']} = R$ {item['preco'] * item['quantidade']:.2f}"
-                    for item in st.session_state.cart
-                ])
-                mensagem = f"Olá! Gostaria de fazer um pedido:\n\n{itens}\n\nTotal: R$ {total:.2f}"
-                mensagem_encoded = mensagem.replace('\n', '%0A').replace(' ', '%20')
-                
-                try:
-                    config_df = pd.read_csv("data/whatsapp_config.csv")
-                    whatsapp_number = config_df.iloc[0]['numero']
-                    whatsapp_link = f"https://wa.me/+55{whatsapp_number}?text={mensagem_encoded}"
-                    st.markdown(f'<a href="{whatsapp_link}" target="_blank">Enviar pedido por WhatsApp</a>', unsafe_allow_html=True)
-                    st.session_state.cart = []
-                    st.success("Pedido enviado! Retornando à loja...")
+
+            st.write(f"**Total: R$ {total:.2f}**")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Continuar Comprando"):
                     st.session_state.show_cart = False
                     st.rerun()
-                except:
-                    st.error("Erro ao processar pedido. Tente novamente.")
+            with col2:
+                if st.button("Finalizar Compra", type="primary"):
+                    try:
+                        config_df = pd.read_csv("data/whatsapp_config.csv")
+                        whatsapp_number = config_df.iloc[0]['numero']
+                        mensagem = "Olá! Gostaria de fazer um pedido:\n\n"
+                        for item in st.session_state.cart:
+                            mensagem += f"• {item['nome']} x{item['quantidade']} = R$ {item['preco'] * item['quantidade']:.2f}\n"
+                        mensagem += f"\nTotal: R$ {total:.2f}"
 
-# Grid de produtos
-if not st.session_state.show_cart:
-    st.markdown('<div class="product-grid">', unsafe_allow_html=True)
-    for idx, produto in produtos_filtrados.iterrows():
-        st.markdown(f"""
-        <div class="product-card">
-            <div class="product-image-container">
-                <img src="uploads/{produto['imagem_path']}" class="product-image" 
-                     onerror="this.src='https://via.placeholder.com/300x300?text=Sem+Imagem'">
-            </div>
-            <div class="product-info">
-                <div class="product-name">{produto['nome']}</div>
-                <div class="product-price">R$ {produto['preco_venda']:.2f}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Ver Detalhes", key=f"details_{idx}", use_container_width=True):
-                st.session_state.show_product_details = produto
-        with col2:
-            if st.button("Comprar", key=f"buy_{idx}", type="primary", use_container_width=True):
-                st.session_state.cart.append({
-                    'codigo': produto['codigo'],
-                    'nome': produto['nome'],
-                    'preco': produto['preco_venda'],
-                    'tamanho': produto['tamanho'],
-                    'cor': produto['cor'],
-                    'quantidade': 1
-                })
-                st.success("✅ Produto adicionado ao carrinho!")
-    st.markdown('</div>', unsafe_allow_html=True)
+                        mensagem_encoded = mensagem.replace('\n', '%0A').replace(' ', '%20')
+                        whatsapp_link = f"https://wa.me/+55{whatsapp_number}?text={mensagem_encoded}"
 
-# Modal de detalhes do produto
+                        st.markdown(f'<a href="{whatsapp_link}" target="_blank">Enviar pedido por WhatsApp</a>', unsafe_allow_html=True)
+                        st.session_state.cart = []
+                        st.success("Pedido enviado! Retornando à loja...")
+                        st.session_state.show_cart = False
+                        st.rerun()
+                    except Exception as e:
+                        st.error("Erro ao processar pedido. Tente novamente.")
+
+# Product details modal
 if st.session_state.show_product_details is not None:
     produto = st.session_state.show_product_details
     with st.container():
@@ -305,12 +225,12 @@ if st.session_state.show_product_details is not None:
             st.image(f"uploads/{produto['imagem_path']}", use_column_width=True)
         with col2:
             st.title(produto['nome'])
-            st.markdown(f"**Categoria:** {produto['categoria']}")
-            st.markdown(f"**Descrição:**\n{produto.get('descricao', '')}")
-            st.markdown(f"**Preço:** R$ {produto['preco_venda']:.2f}")
-            st.markdown(f"**Cor:** {produto['cor']}")
-            st.markdown(f"**Tamanho:** {produto['tamanho']}")
-            
+            st.write(f"**Categoria:** {produto['categoria']}")
+            st.write(f"**Descrição:**\n{produto.get('descricao', '')}")
+            st.write(f"**Preço:** R$ {produto['preco_venda']:.2f}")
+            st.write(f"**Cor:** {produto['cor']}")
+            st.write(f"**Tamanho:** {produto['tamanho']}")
+
             if st.button("Fechar"):
                 st.session_state.show_product_details = None
                 st.rerun()
