@@ -68,9 +68,9 @@ categoria_selecionada = st.sidebar.selectbox('Categoria', categorias)
 
 preco_min, preco_max = st.sidebar.slider(
     'Faixa de Preço',
-    float(produtos_df['preco'].min()),
-    float(produtos_df['preco'].max()),
-    (float(produtos_df['preco'].min()), float(produtos_df['preco'].max()))
+    float(produtos_df['preco_venda'].min()),
+    float(produtos_df['preco_venda'].max()),
+    (float(produtos_df['preco_venda'].min()), float(produtos_df['preco_venda'].max()))
 )
 
 # Filtrar produtos
@@ -80,8 +80,8 @@ else:
     produtos_filtrados = produtos_df
 
 produtos_filtrados = produtos_filtrados[
-    (produtos_filtrados['preco'] >= preco_min) &
-    (produtos_filtrados['preco'] <= preco_max)
+    (produtos_filtrados['preco_venda'] >= preco_min) &
+    (produtos_filtrados['preco_venda'] <= preco_max)
 ]
 
 # Header da loja
